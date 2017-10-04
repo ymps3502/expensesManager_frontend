@@ -5,14 +5,13 @@
                          light
                          v-model="drawer"
                          enable-resize-watcher
-                         hide-overlay
-                         >
+                         hide-overlay>
       <v-list class="pt-2">
         <v-list-group v-for="item in items"
                       :value="item.active"
                       v-bind:key="item.title">
           <v-list-tile slot="item"
-                       @click="">
+                       :to="item.to">
             <v-list-tile-action>
               <v-icon>{{ item.action }}</v-icon>
             </v-list-tile-action>
@@ -38,6 +37,12 @@
     </v-navigation-drawer>
     <v-toolbar>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <v-btn flat to="addAccounts">
+          <v-icon>add</v-icon>
+          新增</v-btn>
+      </v-toolbar-items>
     </v-toolbar>
     <main>
       <v-container fluid>
@@ -56,7 +61,8 @@ export default {
       items: [
         {
           action: 'history',
-          title: '歷史紀錄'
+          title: '歷史紀錄',
+          to: '/history'
         },
         {
           action: 'local_offer',
