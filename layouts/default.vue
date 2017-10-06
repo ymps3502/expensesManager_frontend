@@ -1,11 +1,10 @@
 <template>
   <v-app>
-    <v-navigation-drawer persistent
-                         clipped
+    <v-navigation-drawer temporary
                          light
                          v-model="drawer"
-                         enable-resize-watcher
-                         hide-overlay>
+                         overflow
+                         absolute>
       <v-list class="pt-2">
         <v-list-group v-for="item in items"
                       :value="item.active"
@@ -39,7 +38,8 @@
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn flat to="addAccounts">
+        <v-btn flat
+               to="addAccounts">
           <v-icon>add</v-icon>
           新增</v-btn>
       </v-toolbar-items>

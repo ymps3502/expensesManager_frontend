@@ -24,7 +24,7 @@
                               full-width
                               :nudge-left="40">
                         <v-text-field slot="activator"
-                                      label="Picker in menu"
+                                      label="日期"
                                       v-model="e3"
                                       prepend-icon="event"
                                       readonly></v-text-field>
@@ -55,7 +55,7 @@
                               full-width
                               :nudge-left="40">
                         <v-text-field slot="activator"
-                                      label="Picker in menu"
+                                      label="時間"
                                       v-model="e6"
                                       prepend-icon="access_time"
                                       readonly></v-text-field>
@@ -64,30 +64,30 @@
                       </v-menu>
                     </v-flex>
                   </v-layout>
-                  <v-select v-bind:items="items"
-                            v-model="e1"
-                            label="Select"
+                  <v-select v-bind:items="whos"
+                            v-model="who"
+                            label="對象"
                             item-value="text"></v-select>
                   <v-layout row wrap>
                     <v-flex xs12 sm6 md6>
-                      <v-select v-bind:items="items"
-                                v-model="e1"
-                                label="Select"
+                      <v-select v-bind:items="tags"
+                                v-model="tag"
+                                label="主分類"
                                 item-value="text"></v-select>
                     </v-flex>
                     <v-flex xs12 sm6 md6>
-                      <v-select v-bind:items="items"
-                                v-model="e1"
-                                label="Select"
+                      <v-select v-bind:items="subTags"
+                                v-model="subTag"
+                                label="子分類"
                                 item-value="text"></v-select>
                     </v-flex>
                   </v-layout>
-                  <v-text-field label="Name"
+                  <v-text-field label="備註"
                                 v-model="name"
                                 multi-line
                                 required></v-text-field>
-                  <v-text-field label="Amount"
-                                value="10"
+                  <v-text-field label="金額"
+                                value="0"
                                 prefix="$"></v-text-field>
                 </v-flex>
               </v-layout>
@@ -99,7 +99,7 @@
           <v-btn primary
                  flat
                  nuxt
-                 to="/inspire">Continue</v-btn>
+                 to="/inspire">新增</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
@@ -111,31 +111,65 @@ export default {
     return {
       valid: false,
       name: '',
-      nameRules: [
-        (v) => !!v || 'Name is required',
-        (v) => v.length <= 10 || 'Name must be less than 10 characters'
-      ],
-      email: '',
-      emailRules: [
-        (v) => !!v || 'E-mail is required',
-        (v) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
-      ],
       e3: null,
       menu: false,
       modal: false,
       e6: null,
       menu2: false,
       modal2: false,
-      e1: null,
-      items: [
-        { text: 'State 1' },
-        { text: 'State 2' },
-        { text: 'State 3' },
-        { text: 'State 4' },
-        { text: 'State 5' },
-        { text: 'State 6' },
-        { text: 'State 7' }
+      who: null,
+      whos: ['自己', '女友', '其他'],
+      tag: null,
+      subTag: null,
+      tags: [
+        { text: '正餐',
+          subTags: [
+            {text: '早餐'},
+            {text: '午餐'},
+            {text: '晚餐'},
+            {text: '消夜'}
+          ]
+        },
+        { text: '零食飲料' },
+        { text: '車費',
+          subTags: [
+            {text: '加油費'},
+            {text: '換機油'},
+            {text: '火車'},
+            {text: '其他'}
+          ]
+        },
+        { text: '食材' },
+        { text: '儲值',
+          subTags: [
+            {text: '悠遊卡'},
+            {text: '郵局'}
+          ]
+        },
+        { text: '日用品' },
+        { text: '生活費',
+          subTags: [
+            {text: '房租'},
+            {text: '電費'},
+            {text: '水費'},
+            {text: '網路費'},
+            {text: '瓦斯費'},
+            {text: '其他'}
+          ]
+        },
+        { text: '娛樂' },
+        { text: '其他' }
       ]
+    }
+  },
+  computed: {
+    subTags () {
+      this.subTag = null
+      var selectTag = this.tags.find(tag => tag.text === this.tag)
+      if (selectTag && selectTag.subTags) {
+        return selectTag.subTags
+      }
+      return ['無']
     }
   }
 }
