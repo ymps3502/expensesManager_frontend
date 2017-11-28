@@ -20,6 +20,12 @@ module.exports = {
     '~/assets/style/app.styl'
   ],
   /*
+  ** Vue-router setting 
+  */
+  router: {
+    base: '/'
+  },
+  /*
   ** Customize the progress-bar color
   */
   loading: { color: '#3B8070' },

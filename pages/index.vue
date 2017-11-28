@@ -10,7 +10,7 @@
                    prominent>
           <v-toolbar-title class="title grey--text">今天</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-menu :nudge-width="100">
+          <v-menu :nudge-width="100" class="mr-2">
             <v-toolbar-title slot="activator"
                              class="body-2 grey--text">
               <span>時間</span>
@@ -26,7 +26,8 @@
           </v-menu>
         </v-toolbar>
       </v-flex>
-      <v-flex sm12
+      <v-flex xs12
+              sm12
               md4>
         <v-card>
           <v-card-text>
@@ -47,7 +48,8 @@
           </v-card-text>
         </v-card>
       </v-flex>
-      <v-flex sm12
+      <v-flex xs12
+              sm12
               md8>
         <v-layout row
                   wrap>

@@ -39,7 +39,7 @@
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-btn flat
-               to="addAccounts">
+               href="addAccounts">
           <v-icon>add</v-icon>
           新增</v-btn>
       </v-toolbar-items>
@@ -62,7 +62,7 @@ export default {
         {
           action: 'history',
           title: '歷史紀錄',
-          to: '/history'
+          to: '/'
         },
         {
           action: 'local_offer',
