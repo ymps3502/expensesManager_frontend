@@ -62,7 +62,7 @@ export default {
         {
           action: 'history',
           title: '歷史紀錄',
-          to: '/'
+          to: '/history'
         },
         {
           action: 'local_offer',

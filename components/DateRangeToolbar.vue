@@ -2,7 +2,7 @@
   <v-toolbar class="white"
               flat
               prominent>
-    <v-toolbar-title class="title grey--text">今天</v-toolbar-title>
+    <v-toolbar-title class="title grey--text">{{ timeText }}</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-menu :nudge-width="100" class="mr-2">
       <v-toolbar-title slot="activator"
@@ -13,7 +13,8 @@
       <v-list>
         <v-list-tile v-for="item in time"
                       :key="item.title"
-                      :to="item.to">
+                      :to="item.to"
+                      @click="updataTimeText(item.title)">
           <v-list-tile-title v-text="item.title"></v-list-tile-title>
         </v-list-tile>
       </v-list>
@@ -45,12 +46,12 @@ export default {
         }
       ]
     }
+  },
+  methods: {
+    updataTimeText (newText) {
+      this.timeText = newText
+    }
   }
-  // computeds: {
-  //   TimeText () {
-  //     return $nuxt.$route.path
-  //   }
-  // }
 }
 </script>
 
