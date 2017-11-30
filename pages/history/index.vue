@@ -9,18 +9,19 @@
         <v-card>
           <v-card-text>
             <v-list class="mb-0">
-              <template v-for="(item, index) in accounts">
-                <v-list-tile v-bind:key="index">
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                  </v-list-tile-content>
-                  <v-list-tile-action>
-                    <v-list-tile-action-text>{{ item.action }} $</v-list-tile-action-text>
-                  </v-list-tile-action>
-                </v-list-tile>
-              </template>
+              <v-list-tile v-bind:key="index" v-for="(item, index) in accounts">
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                  <v-list-tile-action-text>{{ item.role }}</v-list-tile-action-text>
+                </v-list-tile-action>
+                <v-list-tile-action>
+                  <v-list-tile-action-text>{{ item.cost }} $</v-list-tile-action-text>
+                </v-list-tile-action>
+              </v-list-tile>
             </v-list>
-            <v-divider class="grey darken-1"></v-divider>
+            <v-divider class="red darken-1"></v-divider>
             <h3 class="headline pt-2 mb-0 text-xs-right">總額 {{ totolPrice }} $</h3>
           </v-card-text>
         </v-card>
@@ -35,7 +36,7 @@
               <v-container wrap>
                 <v-layout>
                   <v-flex class="cell">
-                    <CommitChart :data="chart.data1" :options="chart.options"></CommitChart>
+                    <PieChart :data="chart.data1" :options="chart.options"></PieChart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -46,7 +47,7 @@
               <v-container>
                 <v-layout>
                   <v-flex class="cell">
-                    <CommitChart :data="chart.data2" :options="chart.options"></CommitChart>
+                    <PieChart :data="chart.data2" :options="chart.options"></PieChart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -58,18 +59,18 @@
   </v-container>
 </template>
 <script>
-import CommitChart from '@/components/PieChart.js'
+import PieChart from '@/components/PieChart.js'
 export default {
   components: {
-    CommitChart
+    PieChart
   },
   data () {
     return {
       accounts: [
-        { title: '早餐', action: 10 },
-        { title: '車費', action: 20 },
-        { title: '飲料', action: 30 },
-        { title: '晚餐', action: 40 }
+        { title: '早餐', role: '自己', cost: 10 },
+        { title: '車費', role: '自己', cost: 20 },
+        { title: '飲料', role: '女友', cost: 30 },
+        { title: '晚餐', role: '自己', cost: 40 }
       ],
       chart: {
         data1: {
@@ -77,7 +78,7 @@ export default {
           datasets: [
             {
               label: 'Data One',
-              backgroundColor: ['#2780c4', '#fccd32', '#38a052'],
+              backgroundColor: ['#2780c4', '#fccd32', '#c6c6c6'],
               data: [10, 20, 50]
             }
           ]
@@ -115,7 +116,7 @@ export default {
   computed: {
     totolPrice () {
       return this.accounts.reduce((previousValue, key) => {
-        return previousValue + key.action
+        return previousValue + key.cost
       }, 0)
     }
   }

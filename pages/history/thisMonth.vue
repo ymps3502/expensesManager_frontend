@@ -5,29 +5,20 @@
               wrap>
       <v-flex xs12
               sm12
-              md4>
+              md5>
         <v-card>
-          <v-card-text>
-            <v-list class="mb-0">
-              <template v-for="(item, index) in accounts">
-                <v-list-tile v-bind:key="index">
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                  </v-list-tile-content>
-                  <v-list-tile-action>
-                    <v-list-tile-action-text>{{ item.action }} $</v-list-tile-action-text>
-                  </v-list-tile-action>
-                </v-list-tile>
-              </template>
-            </v-list>
-            <v-divider class="grey darken-1"></v-divider>
-            <h3 class="headline pt-2 mb-0 text-xs-right">總額 {{ totolPrice }} $</h3>
-          </v-card-text>
+          <v-container wrap>
+            <v-layout>
+              <v-flex class="cell">
+                <LineChart :data="chart.line" :options="chart.options.bar"></LineChart>
+              </v-flex>
+            </v-layout>
+          </v-container>
         </v-card>
       </v-flex>
       <v-flex xs12
               sm12
-              md8>
+              md7>
         <v-layout row
                   wrap>
           <v-flex xs12>
@@ -35,7 +26,7 @@
               <v-container wrap>
                 <v-layout>
                   <v-flex class="cell">
-                    <CommitChart :data="chart.data1" :options="chart.options"></CommitChart>
+                    <PieChart :data="chart.data1" :options="chart.options.pie"></PieChart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -46,7 +37,7 @@
               <v-container>
                 <v-layout>
                   <v-flex class="cell">
-                    <CommitChart :data="chart.data2" :options="chart.options"></CommitChart>
+                    <PieChart :data="chart.data2" :options="chart.options.pie"></PieChart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -58,26 +49,41 @@
   </v-container>
 </template>
 <script>
-import CommitChart from '@/components/PieChart.js'
+import PieChart from '@/components/PieChart.js'
+import LineChart from '@/components/LineChart.js'
 export default {
   components: {
-    CommitChart
+    PieChart,
+    LineChart
   },
   data () {
     return {
-      accounts: [
-        { title: '早餐', action: 10 },
-        { title: '車費', action: 20 },
-        { title: '飲料', action: 30 },
-        { title: '晚餐', action: 40 }
-      ],
       chart: {
+        line: {
+          labels: [
+            '1', '', '', '',
+            '5', '', '', '',
+            '10', '', '', '',
+            '15', '', '', '',
+            '20', '', '', '',
+            '25', '', '', '',
+            '30'
+          ],
+          datasets: [
+            {
+              data: [1, 2, 3, 4, 4, 5, 3, 4, 8, 2, 45, 2, 8, 9, 3],
+              backgroundColor: '#8FD8D8',
+              borderColor: '#75afaf',
+              fill: false
+            }
+          ]
+        },
         data1: {
           labels: ['自己', '女友', '其他'],
           datasets: [
             {
               label: 'Data One',
-              backgroundColor: ['#2780c4', '#fccd32', '#38a052'],
+              backgroundColor: ['#2780c4', '#fccd32', '#c6c6c6'],
               data: [10, 20, 50]
             }
           ]
@@ -103,20 +109,26 @@ export default {
           ]
         },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          legend: {
-            position: 'right'
+          pie: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+              position: 'right'
+            }
+          },
+          bar: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+              display: false
+            },
+            scales: {
+              xAxes: [{ barPercentage: 1 }],
+              yAxes: [{ gridLines: { display: true } }]
+            }
           }
         }
       }
-    }
-  },
-  computed: {
-    totolPrice () {
-      return this.accounts.reduce((previousValue, key) => {
-        return previousValue + key.action
-      }, 0)
     }
   }
 }
