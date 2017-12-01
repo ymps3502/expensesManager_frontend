@@ -81,6 +81,7 @@
                             sm6
                             md6>
                       <v-select :items="tags"
+                                
                                 v-model="form.mainTag"
                                 label="主分類"
                                 item-value="text"></v-select>
@@ -183,7 +184,8 @@ export default {
   computed: {
     subTags () {
       this.subTag = null
-      var selectTag = this.tags.find(tag => tag.text === this.tag)
+      var selectTag = this.tags.find(tag => tag.text === this.form.mainTag)
+      console.log(selectTag)
       if (selectTag && selectTag.subTags) {
         return selectTag.subTags
       }

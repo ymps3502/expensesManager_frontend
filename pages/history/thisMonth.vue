@@ -10,7 +10,7 @@
           <v-container wrap>
             <v-layout>
               <v-flex class="cell">
-                <LineChart :data="chart.line" :options="chart.options.bar"></LineChart>
+                <line-chart :data="chart.line" :options="chart.options.bar"></line-chart>
               </v-flex>
             </v-layout>
           </v-container>
@@ -26,7 +26,7 @@
               <v-container wrap>
                 <v-layout>
                   <v-flex class="cell">
-                    <PieChart :data="chart.data1" :options="chart.options.pie"></PieChart>
+                    <pie-chart :data="chart.data1" :options="chart.options.pie"></pie-chart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -37,7 +37,7 @@
               <v-container>
                 <v-layout>
                   <v-flex class="cell">
-                    <PieChart :data="chart.data2" :options="chart.options.pie"></PieChart>
+                    <pie-chart :data="chart.data2" :options="chart.options.pie"></pie-chart>
                   </v-flex>
                 </v-layout>
               </v-container>
