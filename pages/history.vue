@@ -5,7 +5,7 @@
               wrap>
       <v-flex d-flex
               xs12>
-        <date-range-toolbar ref="reset"></date-range-toolbar>
+        <date-range-toolbar ref="reset" class="mt-2"></date-range-toolbar>
       </v-flex>
       <nuxt-child/>
     </v-layout>

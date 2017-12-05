@@ -23,6 +23,7 @@
           </v-list-tile>
           <v-list-tile v-for="subItem in item.items"
                        v-bind:key="subItem.title"
+                       :to="subItem.to"
                        @click="">
             <v-list-tile-content>
               <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
@@ -45,9 +46,7 @@
       </v-toolbar-items>
     </v-toolbar>
     <main>
-      <v-container fluid>
-        <nuxt />
-      </v-container>
+      <nuxt />
     </main>
     <v-footer></v-footer>
   </v-app>
@@ -68,15 +67,15 @@ export default {
           action: 'local_offer',
           title: '標籤',
           items: [
-            { title: '正餐' },
-            { title: '零食飲料' },
-            { title: '車費' },
-            { title: '食材' },
-            { title: '儲值' },
-            { title: '日用品' },
-            { title: '生活費' },
-            { title: '娛樂' },
-            { title: '其他' }
+            { title: '正餐', to: '/tags/' },
+            { title: '零食飲料', to: '/tags/' },
+            { title: '車費', to: '/tags/' },
+            { title: '食材', to: '/tags/' },
+            { title: '儲值', to: '/tags/' },
+            { title: '日用品', to: '/tags/' },
+            { title: '生活費', to: '/tags/' },
+            { title: '娛樂', to: '/tags/' },
+            { title: '其他', to: '/tags/' }
           ]
         }
       ]

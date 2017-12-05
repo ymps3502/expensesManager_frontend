@@ -15,7 +15,7 @@
                       :key="item.title"
                       :to="item.to"
                       @click="updataTimeText(item.title)">
-          <v-list-tile-title v-text="item.title"></v-list-tile-title>
+          <v-list-tile-title>{{ item.title }}</v-list-tile-title>
         </v-list-tile>
       </v-list>
     </v-menu>
@@ -45,6 +45,23 @@ export default {
           to: '/history/thisYear'
         }
       ]
+    }
+  },
+  mounted () {
+    let path = window.location.pathname.split(/\//)[2]
+    switch (path) {
+      case 'thisWeek':
+        this.updataTimeText('本週')
+        break
+      case 'thisMonth':
+        this.updataTimeText('本月')
+        break
+      case 'thisYear':
+        this.updataTimeText('今年')
+        break
+      case undefined:
+        this.updataTimeText('今天')
+        break
     }
   },
   methods: {
