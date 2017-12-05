@@ -6,7 +6,7 @@
       <v-flex xs12
               sm8
               md5>
-              <AddAccount></AddAccount>
+              <AddAccount :form="form"></AddAccount>
       </v-flex>
     </v-layout>
   </v-container>
@@ -17,6 +17,19 @@ import AddAccount from '@/components/AddAccount'
 export default {
   components: {
     AddAccount
+  },
+  data () {
+    return {
+      form: {
+        date: null,
+        time: null,
+        who: null,
+        mainTag: null,
+        subTag: null,
+        info: null,
+        cost: null
+      }
+    }
   }
 }
 </script>

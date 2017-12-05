@@ -1,6 +1,10 @@
 <template>
   <v-card>
-    <v-card-title class="headline">記帳</v-card-title>
+    <v-card-title class="headline">
+      記帳
+      <v-spacer></v-spacer>
+      <v-btn flat icon v-show="editMode"><v-icon>close</v-icon></v-btn>
+    </v-card-title>
     <v-card-text>
       <v-container grid-list-md>
         <v-form v-model="valid">
@@ -105,28 +109,28 @@
       <v-btn primary
             flat
             nuxt
-            to="/inspire">新增</v-btn>
+            to="/inspire">{{ modeBtn }}</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
 export default {
+  props: {
+    form: {
+      type: Object
+    },
+    mode: {
+      type: String,
+      default: 'add'
+    }
+  },
   data () {
     return {
       valid: false,
       picker: {
         date: false,
         time: false
-      },
-      form: {
-        date: null,
-        time: null,
-        who: null,
-        mainTag: null,
-        subTag: null,
-        info: null,
-        cost: null
       },
       whos: ['自己', '女友', '其他'],
       tags: [
@@ -178,11 +182,16 @@ export default {
     subTags () {
       this.subTag = null
       var selectTag = this.tags.find(tag => tag.text === this.form.mainTag)
-      console.log(selectTag)
       if (selectTag && selectTag.subTags) {
         return selectTag.subTags
       }
       return ['無']
+    },
+    modeBtn () {
+      return this.mode === 'add' ? '新增' : '儲存'
+    },
+    editMode () {
+      return this.mode === 'edit'
     }
   }
 }
