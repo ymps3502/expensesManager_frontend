@@ -1,66 +1,62 @@
 <template>
   <v-container fluid class="no-margin-top">
-    <v-layout>
-      <v-flex>
-        <v-card>
-            <transition mode="out-in">
-              <v-card-title v-if="showAction" key="noSelect">
-                Nutrition
-                <v-spacer></v-spacer>
-                <v-text-field
-                  append-icon="search"
-                  label="Search"
-                  single-line
-                  hide-details
-                  v-model="search"
-                ></v-text-field>
-              </v-card-title>
-              <v-card-title v-else="!showAction" key="select" class="accent">            
-                  已選取 {{ selected.length }} 筆記錄
-                  <v-spacer></v-spacer>
-                  <v-btn flat icon><v-icon>delete</v-icon></v-btn>
-              </v-card-title>
-            </transition>
-          <v-data-table
-            :headers="headers"
-            :items="items"
-            :search="search"
-            :rows-per-page-items="rowsPerPageItems"
-            v-model="selected"
-            item-key="name"
-            select-all
-            class="elevation-1"
-          >
-            <template slot="headerCell" scope="props">
-              <v-tooltip bottom>
-                <span slot="activator">
-                  {{ props.header.text }}
-                </span>
-                <span>
-                  {{ props.header.text }}
-                </span>
-              </v-tooltip>
-            </template>
-            <template slot="items" scope="props">
-              <td>
-                <v-checkbox
-                  primary
-                  hide-details
-                  v-model="props.selected"
-                ></v-checkbox>
-              </td>
-              <td>{{ props.item.name }}</td>
-              <td>{{ props.item.calories }}</td>
-              <td>{{ props.item.fat }}</td>
-              <td class="text-xs-right">{{ props.item.carbs }}</td>
-              <td>{{ props.item.protein }}</td>
-              <td class="text-lg-right"><v-btn flat icon @click.stop="showAccountDialog(props.item)"><v-icon>edit</v-icon></v-btn></td>
-            </template>
-          </v-data-table>
-        </v-card>
-      </v-flex>
-      <v-dialog v-model="accountDialog" max-width="500px"><add-account :form="formData" :mode="'edit'" @close="closeDialog"></add-account></v-dialog>
-    </v-layout>
+    <v-card>
+      <transition mode="out-in">
+        <v-card-title v-if="showAction" key="noSelect">
+          Nutrition
+          <v-spacer></v-spacer>
+          <v-text-field
+            append-icon="search"
+            label="Search"
+            single-line
+            hide-details
+            v-model="search"
+          ></v-text-field>
+        </v-card-title>
+        <v-card-title v-else="!showAction" key="select" class="accent">            
+            已選取 {{ selected.length }} 筆記錄
+            <v-spacer></v-spacer>
+            <v-btn flat icon><v-icon>delete</v-icon></v-btn>
+        </v-card-title>
+      </transition>
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        :search="search"
+        :rows-per-page-items="rowsPerPageItems"
+        v-model="selected"
+        item-key="name"
+        select-all
+        class="elevation-1"
+      >
+        <template slot="headerCell" scope="props">
+          <v-tooltip bottom>
+            <span slot="activator">
+              {{ props.header.text }}
+            </span>
+            <span>
+              {{ props.header.text }}
+            </span>
+          </v-tooltip>
+        </template>
+        <template slot="items" scope="props">
+          <td>
+            <v-checkbox
+              primary
+              hide-details
+              v-model="props.selected"
+            ></v-checkbox>
+          </td>
+          <td>{{ props.item.name }}</td>
+          <td>{{ props.item.calories }}</td>
+          <td>{{ props.item.fat }}</td>
+          <td class="text-xs-right">{{ props.item.carbs }}</td>
+          <td>{{ props.item.protein }}</td>
+          <td class="text-lg-right"><v-btn flat icon @click.stop="showAccountDialog(props.item)"><v-icon>edit</v-icon></v-btn></td>
+        </template>
+      </v-data-table>
+    </v-card>
+    <v-dialog v-model="accountDialog" max-width="500px"><add-account :form="formData" :mode="'edit'" @close="closeDialog"></add-account></v-dialog>
   </v-container>
 </template>
 
