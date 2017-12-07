@@ -38,11 +38,12 @@
     <v-toolbar>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-spacer></v-spacer>
-      <v-toolbar-items>
+      <v-toolbar-items class="hidden-xs-only">
         <v-btn flat
                href="addAccounts">
           <v-icon>add</v-icon>
-          新增</v-btn>
+          新增
+        </v-btn>
       </v-toolbar-items>
     </v-toolbar>
     <main>

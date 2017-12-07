@@ -8,14 +8,17 @@
         <date-range-toolbar ref="reset" class="mt-2"></date-range-toolbar>
       </v-flex>
       <nuxt-child/>
+      <v-spacer></v-spacer>
+      <FAB></FAB>
     </v-layout>
   </v-container>
 </template>
 <script>
 import DateRangeToolbar from '../components/DateRangeToolbar'
+import FAB from '@/components/FloatActionButton'
 export default {
   components: {
-    DateRangeToolbar
+    DateRangeToolbar, FAB
   },
   beforeRouteUpdate (to, from, next) {
     let nextPath = to.name
