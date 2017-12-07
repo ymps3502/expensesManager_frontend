@@ -3,7 +3,7 @@
     <v-layout>
       <v-flex>
         <v-card>
-            <transition mode="out-in" name="slide-y-transition">
+            <transition mode="out-in">
               <v-card-title v-if="showAction" key="noSelect">
                 Nutrition
                 <v-spacer></v-spacer>
@@ -16,7 +16,7 @@
                 ></v-text-field>
               </v-card-title>
               <v-card-title v-else="!showAction" key="select" class="accent">            
-                  <div class="subheading">已選取 {{ selected.length }} 筆記錄</div>
+                  已選取 {{ selected.length }} 筆記錄
                   <v-spacer></v-spacer>
                   <v-btn flat icon><v-icon>delete</v-icon></v-btn>
               </v-card-title>
@@ -59,7 +59,7 @@
           </v-data-table>
         </v-card>
       </v-flex>
-      <v-dialog v-model="accountDialog" max-width="500px"><add-account :form="formData" :mode="'edit'"></add-account></v-dialog>
+      <v-dialog v-model="accountDialog" max-width="500px"><add-account :form="formData" :mode="'edit'" @close="closeDialog"></add-account></v-dialog>
     </v-layout>
   </v-container>
 </template>
@@ -186,7 +186,10 @@ export default {
     showAccountDialog (item) {
       // console.log(item)
       this.formData.date = item.name
-      this.accountDialog = !this.accountDialog
+      this.accountDialog = true
+    },
+    closeDialog () {
+      this.accountDialog = false
     }
   }
 }
@@ -195,5 +198,29 @@ export default {
 <style scoped>
 .no-margin-top {
   margin: 0;
+}
+
+.v-leave {
+  opacity: 1;
+}
+
+.v-leave-active {
+  transition: opacity .0s
+}
+
+.v-leave-to {
+  opacity: 0;
+}
+
+.v-enter {
+  opacity: 0;
+}
+
+.v-enter-active {
+  transition: opacity .15s;
+}
+
+.v-enter-to {
+  opacity: 1;
 }
 </style>

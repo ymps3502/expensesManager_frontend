@@ -3,7 +3,7 @@
     <v-card-title class="headline">
       記帳
       <v-spacer></v-spacer>
-      <v-btn flat icon v-show="editMode"><v-icon>close</v-icon></v-btn>
+      <v-btn flat icon v-show="editMode" @click="close"><v-icon>close</v-icon></v-btn>
     </v-card-title>
     <v-card-text>
       <v-container grid-list-md>
@@ -192,6 +192,11 @@ export default {
     },
     editMode () {
       return this.mode === 'edit'
+    }
+  },
+  methods: {
+    close () {
+      this.$emit('close')
     }
   }
 }
