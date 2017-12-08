@@ -34,6 +34,7 @@
     </v-navigation-drawer>
     <v-toolbar>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-title>Title</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-xs-only">
         <v-btn flat
@@ -57,8 +58,8 @@ export default {
       drawer: false,
       items: [
         {
-          action: 'history',
-          title: '歷史紀錄',
+          action: 'insert_chart',
+          title: '圖表',
           to: '/history'
         },
         {

@@ -1,3 +1,3 @@
 export default function ({ redirect }) {
-  return redirect('/history')
+  return redirect('/chart')
 }

@@ -22,7 +22,7 @@ export default {
   },
   beforeRouteUpdate (to, from, next) {
     let nextPath = to.name
-    if (nextPath === 'history') { this.$refs.reset.updataTimeText('今天') }
+    if (nextPath === 'chart') { this.$refs.reset.updataTimeText('今天') }
     next()
   }
 }
