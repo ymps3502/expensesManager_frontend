@@ -1,17 +1,9 @@
 <template>
-  <v-container fluid class="no-margin-top">
+  <v-container>
     <v-card>
       <transition mode="out-in">
         <v-card-title v-if="showAction" key="noSelect">
           Nutrition
-          <v-spacer></v-spacer>
-          <v-text-field
-            append-icon="search"
-            label="Search"
-            single-line
-            hide-details
-            v-model="search"
-          ></v-text-field>
         </v-card-title>
         <v-card-title v-else="!showAction" key="select" class="accent">            
             已選取 {{ selected.length }} 筆記錄
@@ -22,7 +14,6 @@
       <v-data-table
         :headers="headers"
         :items="items"
-        :search="search"
         :rows-per-page-items="rowsPerPageItems"
         v-model="selected"
         item-key="name"
@@ -37,18 +28,54 @@
               v-model="props.selected"
             ></v-checkbox>
           </td>
-          <td>{{ props.item.name }}</td>
-          <td>{{ props.item.calories }}</td>
-          <td>{{ props.item.fat }}</td>
-          <td class="text-xs-right">{{ props.item.carbs }}</td>
-          <td>{{ props.item.protein }}</td>
-          <td class="text-lg-right"><v-btn flat icon @click.stop="showAccountDialog(props.item)"><v-icon>edit</v-icon></v-btn></td>
+          <td>
+            <v-edit-dialog lazy>
+              {{ props.item.name }}
+              <v-text-field
+                slot="input"
+                label="Edit"
+                v-model="props.item.name"
+                single-line
+                counter="25"
+                :rules="[max25chars]"
+              ></v-text-field>
+            </v-edit-dialog>
+          </td>
+          <td>
+            <v-edit-dialog lazy>
+              {{ props.item.calories }}
+              <v-text-field
+                slot="input"
+                label="Edit"
+                v-model="props.item.calories"
+                single-line
+                counter="25"
+                :rules="[max25chars]"
+              ></v-text-field>
+            </v-edit-dialog>
+          </td>
+          <td>
+            <v-select
+              chips
+              tags
+              append-icon=""
+              clearable
+              v-model="props.item.chips"
+            >
+              <template slot="selection" scope="data">
+                <v-chip
+                  close
+                  @input="removeChip(props.item.chips, data.item)"
+                  :selected="data.selected"
+                >
+                  <strong>{{ data.item }}</strong>
+                </v-chip>
+              </template>
+            </v-select>
+          </td>
         </template>
       </v-data-table>
     </v-card>
-    <v-spacer></v-spacer>
-    <FAB></FAB>
-    <v-dialog v-model="accountDialog" max-width="500px"><add-account :form="formData" :mode="'edit'" @close="closeDialog"></add-account></v-dialog>
   </v-container>
 </template>
 
@@ -61,7 +88,6 @@ export default {
   },
   data () {
     return {
-      accountDialog: false,
       formData: {
         date: null,
         time: null,
@@ -74,13 +100,11 @@ export default {
       rowsPerPageItems: [10, 15, 20, { text: 'All', value: -1 }],
       search: '',
       selected: [],
+      max25chars: (v) => v.length <= 25 || 'Input too long!',
       headers: [
-        { text: '時間', value: 'name', align: 'left' },
-        { text: '對象', value: 'calories', align: 'left' },
-        { text: '子分類', value: 'fat', align: 'left' },
-        { text: '花費', value: 'carbs', align: 'right' },
-        { text: '備註', value: 'protein', align: 'left' },
-        { text: '', value: 'icon' }
+        { text: '主標籤', value: 'name', align: 'left', sortable: false },
+        { text: '圖示', value: 'calories', align: 'left', sortable: false },
+        { text: '子標籤', value: 'fat', align: 'left', sortable: false }
       ],
       items: [
         {
@@ -89,7 +113,8 @@ export default {
           calories: 159,
           fat: 6.0,
           carbs: 24,
-          protein: 4.0
+          protein: 4.0,
+          chips: []
         },
         {
           value: false,
@@ -97,7 +122,8 @@ export default {
           calories: 237,
           fat: 9.0,
           carbs: 37,
-          protein: 4.3
+          protein: 4.3,
+          chips: []
         },
         {
           value: false,
@@ -105,7 +131,8 @@ export default {
           calories: 262,
           fat: 16.0,
           carbs: 23,
-          protein: 6.0
+          protein: 6.0,
+          chips: []
         },
         {
           value: false,
@@ -179,6 +206,11 @@ export default {
     },
     closeDialog () {
       this.accountDialog = false
+    },
+    removeChip (chips, item) {
+      console.log(chips)
+      chips.splice(chips.indexOf(item), 1)
+      chips = [...chips]
     }
   }
 }
@@ -213,3 +245,4 @@ export default {
   opacity: 1;
 }
 </style>
+s

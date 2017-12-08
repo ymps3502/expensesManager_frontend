@@ -75,6 +75,11 @@ export default {
             { title: '娛樂', to: '/tags/' },
             { title: '其他', to: '/tags/' }
           ]
+        },
+        {
+          action: 'settings',
+          title: '設定',
+          to: '/settings'
         }
       ]
     }
