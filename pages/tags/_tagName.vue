@@ -3,7 +3,7 @@
     <v-card>
       <transition mode="out-in">
         <v-card-title v-if="showAction" key="noSelect">
-          Nutrition
+          {{ pageName }}
           <v-spacer></v-spacer>
           <v-text-field
             append-icon="search"
@@ -61,6 +61,7 @@ export default {
   },
   data () {
     return {
+      pageName: this.$route.params.tagName,
       accountDialog: false,
       formData: {
         date: null,
