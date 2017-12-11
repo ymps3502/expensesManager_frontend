@@ -60,6 +60,11 @@ export default {
         {
           action: 'insert_chart',
           title: '圖表',
+          to: '/chart'
+        },
+        {
+          action: 'history',
+          title: '歷史紀錄',
           to: '/history'
         },
         {
