@@ -93,12 +93,12 @@
                             item-value="text"></v-select>
                 </v-flex>
               </v-layout>
-              <v-text-field label="備註"
-                            v-model="form.info"
-                            multi-line></v-text-field>
               <v-text-field label="金額"
                             prefix="$"
                             v-model="form.cost"></v-text-field>
+              <v-text-field label="備註"
+                            v-model="form.info"
+                            multi-line></v-text-field>
             </v-flex>
           </v-layout>
         </v-form>
