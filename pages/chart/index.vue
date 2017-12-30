@@ -1,6 +1,7 @@
 <template>
   <v-container fluid
-               grid-list-md>
+               grid-list-md
+               class="px-3">
     <v-layout row
               wrap>
       <v-flex xs12
@@ -67,6 +68,12 @@ export default {
   data () {
     return {
       accounts: [
+        { title: '早餐', role: '自己', cost: 10 },
+        { title: '車費', role: '自己', cost: 20 },
+        { title: '飲料', role: '女友', cost: 30 },
+        { title: '早餐', role: '自己', cost: 10 },
+        { title: '車費', role: '自己', cost: 20 },
+        { title: '飲料', role: '女友', cost: 30 },
         { title: '早餐', role: '自己', cost: 10 },
         { title: '車費', role: '自己', cost: 20 },
         { title: '飲料', role: '女友', cost: 30 },

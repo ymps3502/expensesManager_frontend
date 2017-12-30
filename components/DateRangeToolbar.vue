@@ -30,19 +30,19 @@ export default {
       time: [
         {
           title: '今天',
-          to: '/history'
+          to: '/chart'
         },
         {
           title: '本週',
-          to: '/history/thisWeek'
+          to: '/chart/thisWeek'
         },
         {
           title: '本月',
-          to: '/history/thisMonth'
+          to: '/chart/thisMonth'
         },
         {
           title: '今年',
-          to: '/history/thisYear'
+          to: '/chart/thisYear'
         }
       ]
     }

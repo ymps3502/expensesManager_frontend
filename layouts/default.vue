@@ -36,7 +36,7 @@
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <!-- <v-toolbar-title :to="title.to">Title</v-toolbar-title> -->
       <v-toolbar-items>
-        <v-btn flat large href="addAccounts" class="title">Title</v-btn>
+        <v-btn flat large href="chart" class="title">Title</v-btn>
       </v-toolbar-items>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-xs-only">
