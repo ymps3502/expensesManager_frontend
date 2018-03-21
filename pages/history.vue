@@ -37,12 +37,12 @@
               v-model="props.selected"
             ></v-checkbox>
           </td>
-          <td>{{ props.item.name }}</td>
-          <td>{{ props.item.calories }}</td>
-          <td>{{ props.item.fat }}</td>
+          <td class="text-xs-right">{{ props.item.name }}</td>
+          <td class="text-xs-right">{{ props.item.calories }}</td>
+          <td class="text-xs-right">{{ props.item.fat }}</td>
           <td class="text-xs-right">{{ props.item.carbs }}</td>
-          <td>{{ props.item.protein }}</td>
-          <td class="text-lg-right"><v-btn flat icon @click.stop="showAccountDialog(props.item)"><v-icon>edit</v-icon></v-btn></td>
+          <td class="text-xs-right">{{ props.item.protein }}</td>
+          <td class="justify-center layout px-0"><v-btn flat icon @click.stop="showAccountDialog(props.item)"><v-icon>edit</v-icon></v-btn></td>
         </template>
       </v-data-table>
     </v-card>
@@ -78,9 +78,9 @@ export default {
         { text: '時間', value: 'name', align: 'left' },
         { text: '對象', value: 'calories', align: 'left' },
         { text: '子分類', value: 'fat', align: 'left' },
-        { text: '花費', value: 'carbs', align: 'right' },
-        { text: '備註', value: 'protein', align: 'left' },
-        { text: '', value: 'icon' }
+        { text: '花費', value: 'carbs', align: 'left' },
+        { text: '備註', value: 'protein', align: 'left', sortable: false },
+        { text: '動作', value: 'icon', align: 'center', sortable: false }
       ],
       items: [
         {
