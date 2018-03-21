@@ -35,7 +35,7 @@
                                   no-title
                                   scrollable
                                   actions>
-                      <template scope="{ save, cancel }">
+                      <template slot-scope="{ save, cancel }">
                         <v-card-actions>
                           <v-btn flat
                                 primary

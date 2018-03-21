@@ -20,7 +20,7 @@
         select-all
         class="elevation-1"
       >
-        <template slot="items" scope="props">
+        <template slot="items" slot-scope="props">
           <td>
             <v-checkbox
               primary
@@ -62,7 +62,7 @@
               clearable
               v-model="props.item.chips"
             >
-              <template slot="selection" scope="data">
+              <template slot="selection" slot-scope="data">
                 <v-chip
                   close
                   @input="removeChip(props.item.chips, data.item)"

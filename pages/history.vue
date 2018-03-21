@@ -29,7 +29,7 @@
         select-all
         class="elevation-1"
       >
-        <template slot="items" scope="props">
+        <template slot="items" slot-scope="props">
           <td>
             <v-checkbox
               primary
@@ -173,6 +173,9 @@ export default {
     showAction () {
       return !this.selected.length > 0
     }
+  },
+  async created () {
+    this.items = await this.$axios.get('bill/all', {responseType: 'json'})
   },
   methods: {
     showAccountDialog (item) {
