@@ -42,7 +42,10 @@
           <td class="text-xs-right">{{ props.item.fat }}</td>
           <td class="text-xs-right">{{ props.item.carbs }}</td>
           <td class="text-xs-right">{{ props.item.protein }}</td>
-          <td class="justify-center layout px-0"><v-btn flat icon @click.stop="showAccountDialog(props.item)"><v-icon>edit</v-icon></v-btn></td>
+          <td class="justify-center layout px-0">
+            <v-btn flat icon @click.stop="showAccountDialog(props.item)"><v-icon>edit</v-icon></v-btn>
+            <v-btn flat icon @click.stop="deleteItem(props.item)"><v-icon>delete</v-icon></v-btn>
+          </td>
         </template>
       </v-data-table>
     </v-card>
