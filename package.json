@@ -10,6 +10,7 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@nuxtjs/axios": "^5.1.1",
     "chart.js": "^2.7.0",
     "nuxt": "^1.0.0-rc9",
     "vue-chartjs": "^3.0.0",

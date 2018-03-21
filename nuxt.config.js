@@ -16,11 +16,24 @@ module.exports = {
     ]
   },
   plugins: ['~/plugins/vuetify.js'],
+  modules: [
+    '@nuxtjs/axios'
+  ],
   css: [
     '~/assets/style/app.styl'
   ],
+  /**
+   * axoios setting
+   */
+  axios: {
+    baseURL: 'http://localhost:8000/api/',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE'
+    }
+  },
   /*
-  ** Vue-router setting 
+  ** Vue-router setting
   */
   router: {
     base: '/'
