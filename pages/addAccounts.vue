@@ -21,12 +21,13 @@ export default {
   data () {
     return {
       form: {
+        id: null,
         date: null,
         time: null,
-        who: null,
-        mainTag: null,
-        subTag: null,
-        info: null,
+        role: null,
+        tag: {id: null},
+        subtag: null,
+        note: null,
         cost: null
       }
     }
