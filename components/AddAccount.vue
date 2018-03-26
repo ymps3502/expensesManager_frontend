@@ -69,8 +69,8 @@
                   </v-menu>
                 </v-flex>
               </v-layout>
-              <v-select :items="whos"
-                        v-model="form.who"
+              <v-select :items="roles"
+                        v-model="form.role"
                         label="對象"
                         item-value="text"></v-select>
               <v-layout row
@@ -79,25 +79,26 @@
                         sm6
                         md6>
                   <v-select :items="tags"
-                            
-                            v-model="form.mainTag"
+                            v-model="form.tag"
                             label="主分類"
-                            item-value="text"></v-select>
+                            item-text="name"
+                            item-value="id"></v-select>
                 </v-flex>
                 <v-flex xs12
                         sm6
                         md6>
-                  <v-select :items="subTags"
-                            v-model="form.subTag"
+                  <v-select :items="subtags"
+                            v-model="form.subtag"
                             label="子分類"
-                            item-value="text"></v-select>
+                            item-text="name"
+                            item-value="id"></v-select>
                 </v-flex>
               </v-layout>
               <v-text-field label="金額"
                             prefix="$"
                             v-model="form.cost"></v-text-field>
               <v-text-field label="備註"
-                            v-model="form.info"
+                            v-model="form.note"
                             multi-line></v-text-field>
             </v-flex>
           </v-layout>
@@ -109,12 +110,13 @@
       <v-btn primary
             flat
             nuxt
-            to="/inspire">{{ modeBtn }}</v-btn>
+            @click="sendForm">{{ modeBtn }}</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   props: {
     form: {
@@ -132,58 +134,28 @@ export default {
         date: false,
         time: false
       },
-      whos: ['自己', '女友', '其他'],
-      tags: [
-        {
-          text: '正餐',
-          subTags: [
-            { text: '早餐' },
-            { text: '午餐' },
-            { text: '晚餐' },
-            { text: '消夜' }
-          ]
-        },
-        { text: '零食飲料' },
-        {
-          text: '車費',
-          subTags: [
-            { text: '加油費' },
-            { text: '換機油' },
-            { text: '火車' },
-            { text: '其他' }
-          ]
-        },
-        { text: '食材' },
-        {
-          text: '儲值',
-          subTags: [
-            { text: '悠遊卡' },
-            { text: '郵局' }
-          ]
-        },
-        { text: '日用品' },
-        {
-          text: '生活費',
-          subTags: [
-            { text: '房租' },
-            { text: '電費' },
-            { text: '水費' },
-            { text: '網路費' },
-            { text: '瓦斯費' },
-            { text: '其他' }
-          ]
-        },
-        { text: '娛樂' },
-        { text: '其他' }
-      ]
+      roles: ['自己', '女友', '其他'],
+      tags: []
     }
   },
+  async created () {
+    let response = await this.$axios.get('tag/all')
+    this.tags = []
+    let temp = {}
+    response.data.forEach(tag => {
+      temp = {
+        id: tag.id,
+        name: tag.name,
+        subtags: tag.subtag
+      }
+      this.tags.push(temp)
+    })
+  },
   computed: {
-    subTags () {
-      this.subTag = null
-      var selectTag = this.tags.find(tag => tag.text === this.form.mainTag)
-      if (selectTag && selectTag.subTags) {
-        return selectTag.subTags
+    subtags () {
+      let selectTag = this.tags.find(tag => tag.id === this.form.tag.id)
+      if (selectTag && selectTag.subtags) {
+        return selectTag.subtags
       }
       return ['無']
     },
@@ -195,6 +167,48 @@ export default {
     }
   },
   methods: {
+    sendForm () {
+      if (this.mode === 'add') this.add()
+      else this.update()
+    },
+    async add () {
+      let time = this.form.date + ' ' + this.form.time
+      let form = {
+        time: moment(time, 'YYYY-MM-DD hh:mma').format('YYYY-MM-DD hh:mm'),
+        role: this.form.role,
+        cost: this.form.cost,
+        tag_id: this.form.tag,
+        subtag_id: this.form.subtag,
+        note: this.form.note
+      }
+      // TODO vuex response message 
+      await this.$axios.post('bill/add', form)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async update () {
+      let time = this.form.date + ' ' + this.form.time
+      let form = {
+        time: moment(time, 'YYYY-MM-DD hh:mma').format('YYYY-MM-DD hh:mm'),
+        role: this.form.role,
+        cost: this.form.cost,
+        tag_id: this.form.tag.id,
+        subtag_id: this.form.subtag.id,
+        note: this.form.note
+      }
+      // TODO vuex response message 
+      await this.$axios.put('bill/update/' + this.form.id, form)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
     close () {
       this.$emit('close')
     }
