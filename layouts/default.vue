@@ -95,6 +95,22 @@ export default {
         }
       ]
     }
+  },
+  async created () {
+    let response = await this.$axios.get('tag/all')
+    this.items.forEach(element => {
+      if (element.title === '標籤') {
+        element.items = []
+        let temp = {}
+        response.data.forEach(tag => {
+          temp = {
+            title: tag.name,
+            to: '/tags/' + tag.name
+          }
+          element.items.push(temp)
+        })
+      }
+    })
   }
 }
 </script>
