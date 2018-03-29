@@ -1,6 +1,7 @@
 <template>
   <v-container fluid
-               grid-list-md>
+               grid-list-md
+               class="mt-0">
     <v-layout row
               wrap>
       <v-flex d-flex
