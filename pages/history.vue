@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import AddAccount from '@/components/AddAccount'
 import FAB from '@/components/FloatActionButton'
 export default {
@@ -103,7 +104,7 @@ export default {
     response.data.forEach(bill => {
       temp = {
         value: false,
-        time: bill.time,
+        time: moment(bill.time).format('YYYY-MM-DD hh:mma'),
         role: bill.role,
         tag: bill.tag,
         subtag: bill.subtag,
