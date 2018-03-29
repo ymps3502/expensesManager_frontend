@@ -10,7 +10,7 @@
           <v-container wrap>
             <v-layout>
               <v-flex class="cell">
-                <bar-chart :data="chart.bar" :options="chart.options.bar"></bar-chart>
+                <bar-chart :data="chart.bar" :options="chart.options.bar" v-if="chart.bar.isLoaded"></bar-chart>
               </v-flex>
             </v-layout>
           </v-container>
@@ -26,7 +26,7 @@
               <v-container wrap>
                 <v-layout>
                   <v-flex class="cell">
-                    <pie-chart :data="chart.data1" :options="chart.options.pie"></pie-chart>
+                    <pie-chart :data="chart.data1" :options="chart.options.pie" v-if="chart.data1.isLoaded"></pie-chart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -37,7 +37,7 @@
               <v-container>
                 <v-layout>
                   <v-flex class="cell">
-                    <pie-chart :data="chart.data2" :options="chart.options.pie"></pie-chart>
+                    <pie-chart :data="chart.data2" :options="chart.options.pie" v-if="chart.data2.isLoaded"></pie-chart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -58,18 +58,13 @@ export default {
   },
   data () {
     return {
-      accounts: [
-        { title: '早餐', action: 10 },
-        { title: '車費', action: 20 },
-        { title: '飲料', action: 30 },
-        { title: '晚餐', action: 40 }
-      ],
       chart: {
         bar: {
+          isLoaded: false,
           labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
           datasets: [
             {
-              data: [10, 20, 50, 40, 100, 10, 0, 253, 123, 51, 15, 88],
+              data: [],
               backgroundColor: '#8FD8D8',
               borderColor: '#75afaf',
               borderWidth: 1.5
@@ -77,17 +72,19 @@ export default {
           ]
         },
         data1: {
-          labels: ['自己', '女友', '其他'],
+          isLoaded: false,
+          labels: [],
           datasets: [
             {
               label: 'Data One',
               backgroundColor: ['#2780c4', '#fccd32', '#c6c6c6'],
-              data: [10, 20, 50]
+              data: []
             }
           ]
         },
         data2: {
-          labels: ['正餐', '零食飲料', '車費', '食材', '儲值', '日用品', '生活費', '娛樂', '其他'],
+          isLoaded: false,
+          labels: [],
           datasets: [
             {
               label: 'Data One',
@@ -102,7 +99,7 @@ export default {
                 '#38a052',
                 '#c6c6c6'
               ],
-              data: [10, 20, 30, 40, 10, 20, 50, 40, 60]
+              data: []
             }
           ]
         },
@@ -130,6 +127,27 @@ export default {
         }
       }
     }
+  },
+  async mounted () {
+    let respBar = await this.$axios.get('bill/year')
+    respBar.data.forEach(data => {
+      this.chart.bar.datasets[0].data[data.month - 1] = data.sum
+    })
+    this.chart.bar.isLoaded = true
+
+    let respRoleChart = await this.$axios.get('bill/year/role')
+    respRoleChart.data.forEach(data => {
+      this.chart.data1.labels.push(data.role)
+      this.chart.data1.datasets[0].data.push(data.sum)
+    })
+    this.chart.data1.isLoaded = true
+
+    let respTagChart = await this.$axios.get('bill/year/tag')
+    respTagChart.data.forEach(data => {
+      this.chart.data2.labels.push(data.tag.name)
+      this.chart.data2.datasets[0].data.push(data.sum)
+    })
+    this.chart.data2.isLoaded = true
   }
 }
 </script>

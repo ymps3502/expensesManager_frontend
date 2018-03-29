@@ -10,7 +10,7 @@
           <v-container wrap>
             <v-layout>
               <v-flex class="cell">
-                <line-chart :data="chart.line" :options="chart.options.bar"></line-chart>
+                <line-chart :data="chart.line" :options="chart.options.line" v-if="chart.line.isLoaded"></line-chart>
               </v-flex>
             </v-layout>
           </v-container>
@@ -26,7 +26,7 @@
               <v-container wrap>
                 <v-layout>
                   <v-flex class="cell">
-                    <pie-chart :data="chart.data1" :options="chart.options.pie"></pie-chart>
+                    <pie-chart :data="chart.data1" :options="chart.options.pie" v-if="chart.data1.isLoaded"></pie-chart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -37,7 +37,7 @@
               <v-container>
                 <v-layout>
                   <v-flex class="cell">
-                    <pie-chart :data="chart.data2" :options="chart.options.pie"></pie-chart>
+                    <pie-chart :data="chart.data2" :options="chart.options.pie" v-if="chart.data2.isLoaded"></pie-chart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -49,6 +49,7 @@
   </v-container>
 </template>
 <script>
+import moment from 'moment'
 import PieChart from '@/components/PieChart.js'
 import LineChart from '@/components/LineChart.js'
 export default {
@@ -60,16 +61,11 @@ export default {
     return {
       chart: {
         line: {
-          labels: [
-            '1', '', '', '', '', '',
-            '7', '', '', '', '', '',
-            '14', '', '', '', '', '',
-            '21', '', '', '', '', '',
-            '28', '', ''
-          ],
+          isLoaded: false,
+          labels: [],
           datasets: [
             {
-              data: [1, 2, 3, 4, 4, 5, 3, 4, 8, 2, 45, 2, 8, 9, 3],
+              data: [],
               backgroundColor: '#8FD8D8',
               borderColor: '#75afaf',
               fill: false
@@ -77,17 +73,19 @@ export default {
           ]
         },
         data1: {
-          labels: ['自己', '女友', '其他'],
+          isLoaded: false,
+          labels: [],
           datasets: [
             {
               label: 'Data One',
               backgroundColor: ['#2780c4', '#fccd32', '#c6c6c6'],
-              data: [10, 20, 50]
+              data: []
             }
           ]
         },
         data2: {
-          labels: ['正餐', '零食飲料', '車費', '食材', '儲值', '日用品', '生活費', '娛樂', '其他'],
+          isLoaded: false,
+          labels: [],
           datasets: [
             {
               label: 'Data One',
@@ -102,7 +100,7 @@ export default {
                 '#38a052',
                 '#c6c6c6'
               ],
-              data: [10, 20, 30, 40, 10, 20, 50, 40, 60]
+              data: []
             }
           ]
         },
@@ -114,7 +112,7 @@ export default {
               position: 'right'
             }
           },
-          bar: {
+          line: {
             responsive: true,
             maintainAspectRatio: false,
             legend: {
@@ -128,6 +126,34 @@ export default {
         }
       }
     }
+  },
+  async mounted () {
+    this.chart.line.labels = new Array(moment().daysInMonth()).fill('')
+    for (let day = 1; day <= moment().daysInMonth(); day++) {
+      if ((day - 1) % 7 === 0) {
+        this.chart.line.labels[day - 1] = day.toString()
+      }
+    }
+    this.chart.line.datasets[0].data = new Array(moment().daysInMonth()).fill(0)
+    let respLine = await this.$axios.get('bill/month')
+    respLine.data.forEach(data => {
+      this.chart.line.datasets[0].data[data.day - 1] = data.sum
+    })
+    this.chart.line.isLoaded = true
+
+    let respRoleChart = await this.$axios.get('bill/month/role')
+    respRoleChart.data.forEach(data => {
+      this.chart.data1.labels.push(data.role)
+      this.chart.data1.datasets[0].data.push(data.sum)
+    })
+    this.chart.data1.isLoaded = true
+
+    let respTagChart = await this.$axios.get('bill/month/tag')
+    respTagChart.data.forEach(data => {
+      this.chart.data2.labels.push(data.tag.name)
+      this.chart.data2.datasets[0].data.push(data.sum)
+    })
+    this.chart.data2.isLoaded = true
   }
 }
 </script>

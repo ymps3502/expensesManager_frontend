@@ -12,7 +12,7 @@
             <v-list class="mb-0">
               <v-list-tile v-bind:key="index" v-for="(item, index) in accounts">
                 <v-list-tile-content>
-                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                  <v-list-tile-title>{{ item.tag }}</v-list-tile-title>
                 </v-list-tile-content>
                 <v-list-tile-action>
                   <v-list-tile-action-text>{{ item.role }}</v-list-tile-action-text>
@@ -37,7 +37,7 @@
               <v-container wrap>
                 <v-layout>
                   <v-flex class="cell">
-                    <pie-chart :data="chart.data1" :options="chart.options"></pie-chart>
+                    <pie-chart :data="chart.data1" :options="chart.options" v-if="chart.data1.isLoaded"></pie-chart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -48,7 +48,7 @@
               <v-container>
                 <v-layout>
                   <v-flex class="cell">
-                    <pie-chart :data="chart.data2" :options="chart.options"></pie-chart>
+                    <pie-chart :data="chart.data2" :options="chart.options" v-if="chart.data2.isLoaded"></pie-chart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -67,31 +67,22 @@ export default {
   },
   data () {
     return {
-      accounts: [
-        { title: '早餐', role: '自己', cost: 10 },
-        { title: '車費', role: '自己', cost: 20 },
-        { title: '飲料', role: '女友', cost: 30 },
-        { title: '早餐', role: '自己', cost: 10 },
-        { title: '車費', role: '自己', cost: 20 },
-        { title: '飲料', role: '女友', cost: 30 },
-        { title: '早餐', role: '自己', cost: 10 },
-        { title: '車費', role: '自己', cost: 20 },
-        { title: '飲料', role: '女友', cost: 30 },
-        { title: '晚餐', role: '自己', cost: 40 }
-      ],
+      accounts: [],
       chart: {
         data1: {
-          labels: ['自己', '女友', '其他'],
+          isLoaded: false,
+          labels: [],
           datasets: [
             {
               label: 'Data One',
               backgroundColor: ['#2780c4', '#fccd32', '#c6c6c6'],
-              data: [10, 20, 50]
+              data: []
             }
           ]
         },
         data2: {
-          labels: ['正餐', '零食飲料', '車費', '食材', '儲值', '日用品', '生活費', '娛樂', '其他'],
+          isLoaded: false,
+          labels: [],
           datasets: [
             {
               label: 'Data One',
@@ -106,7 +97,7 @@ export default {
                 '#38a052',
                 '#c6c6c6'
               ],
-              data: [10, 20, 30, 40, 10, 20, 50, 40, 60]
+              data: []
             }
           ]
         },
@@ -126,6 +117,32 @@ export default {
         return previousValue + key.cost
       }, 0)
     }
+  },
+  async mounted () {
+    let respList = await this.$axios.get('bill/today')
+    let item = {}
+    respList.data.forEach(data => {
+      item = {
+        tag: data.tag.name,
+        role: data.role,
+        cost: data.cost
+      }
+      this.accounts.push(item)
+    })
+
+    let respRoleChart = await this.$axios.get('bill/today/role')
+    respRoleChart.data.forEach(data => {
+      this.chart.data1.labels.push(data.role)
+      this.chart.data1.datasets[0].data.push(data.sum)
+    })
+    this.chart.data1.isLoaded = true
+
+    let respTagChart = await this.$axios.get('bill/today/tag')
+    respTagChart.data.forEach(data => {
+      this.chart.data2.labels.push(data.tag.name)
+      this.chart.data2.datasets[0].data.push(data.sum)
+    })
+    this.chart.data2.isLoaded = true
   }
 }
 </script>
