@@ -41,7 +41,7 @@
           </td>
           <td class="text-xs-right">{{ props.item.time }}</td>
           <td class="text-xs-right">{{ props.item.role }}</td>
-          <td class="text-xs-right">{{ props.item.subtag.name }}</td>
+          <td class="text-xs-right">{{ props.item.subtag | filterSubtagName }}</td>
           <td class="text-xs-right">{{ props.item.cost }}</td>
           <td class="text-xs-right">{{ props.item.note }}</td>
           <td class="justify-center layout px-0">
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import AddAccount from '@/components/AddAccount'
 import FAB from '@/components/FloatActionButton'
 export default {
@@ -98,14 +99,20 @@ export default {
       return !this.selected.length > 0
     }
   },
+  filters: {
+    filterSubtagName (subtag) {
+      return subtag ? subtag.name : '無'
+    }
+  },
   async created () {
     // TODO get tag id
     let response = await this.$axios.get('bill/tag/1')
     let temp = {}
     response.data.forEach(bill => {
+      // console.log(bill)
       temp = {
         value: false,
-        time: bill.time,
+        time: moment(bill.time).format('YYYY-MM-DD hh:mma'),
         role: bill.role,
         tag: bill.tag,
         subtag: bill.subtag,
