@@ -3,7 +3,7 @@
     <v-card-title class="headline">
       記帳
       <v-spacer></v-spacer>
-      <v-btn flat icon v-show="editMode" @click="close"><v-icon>close</v-icon></v-btn>
+      <v-btn flat icon @click="close"><v-icon>close</v-icon></v-btn>
     </v-card-title>
     <v-card-text>
       <v-container grid-list-md>
@@ -38,11 +38,11 @@
                       <template slot-scope="{ save, cancel }">
                         <v-card-actions>
                           <v-btn flat
-                                primary
+                                color="primary"
                                 @click.native="cancel()"
                                 取消</v-btn>
                             <v-btn flat
-                                  primary
+                                  color="primary"
                                   @click.native="save()">選取</v-btn>
                         </v-card-actions>
                       </template>
@@ -107,7 +107,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn primary
+      <v-btn color="primary"
             flat
             nuxt
             @click="sendForm">{{ modeBtn }}</v-btn>
@@ -168,21 +168,15 @@ export default {
   },
   methods: {
     sendForm () {
+      // console.log(this.form)
       if (this.mode === 'add') this.add()
       else this.update()
     },
     async add () {
       let time = this.form.date + ' ' + this.form.time
-      let form = {
-        time: moment(time, 'YYYY-MM-DD hh:mma').format('YYYY-MM-DD hh:mm'),
-        role: this.form.role,
-        cost: this.form.cost,
-        tag_id: this.form.tag,
-        subtag_id: this.form.subtag,
-        note: this.form.note
-      }
+      this.form.time = moment(time, 'YYYY-MM-DD hh:mma').format('YYYY-MM-DD hh:mm')
       // TODO vuex response message 
-      await this.$axios.post('bill/add', form)
+      await this.$axios.post('bill/add', this.form)
         .then(response => {
           console.log(response)
         })
@@ -192,17 +186,11 @@ export default {
     },
     async update () {
       let time = this.form.date + ' ' + this.form.time
-      let form = {
-        time: moment(time, 'YYYY-MM-DD hh:mma').format('YYYY-MM-DD hh:mm'),
-        role: this.form.role,
-        cost: this.form.cost,
-        tag_id: this.form.tag.id,
-        subtag_id: this.form.subtag.id,
-        note: this.form.note
-      }
+      this.form.time = moment(time, 'YYYY-MM-DD hh:mma').format('YYYY-MM-DD hh:mm')
       // TODO vuex response message 
-      await this.$axios.put('bill/update/' + this.form.id, form)
+      await this.$axios.put('bill/update/' + this.form.id, this.form)
         .then(response => {
+          this.close()
           console.log(response)
         })
         .catch(error => {

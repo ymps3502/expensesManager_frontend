@@ -22,7 +22,7 @@
             </v-list-tile-action>
           </v-list-tile>
           <v-list-tile v-for="subItem in item.items"
-                       v-bind:key="subItem.title"
+                       :key="subItem.title"
                        :to="subItem.to"
                        @click="">
             <v-list-tile-content>
@@ -40,13 +40,22 @@
       </v-toolbar-items>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-xs-only">
-        <v-btn flat
-               href="addAccounts">
-          <v-icon>add</v-icon>
-          新增
-        </v-btn>
+        <v-menu offset-y open-on-hover>
+          <v-btn flat slot="activator">
+            新增
+            <v-icon>arrow_drop_down</v-icon>
+          </v-btn>
+          <v-list>
+            <v-list-tile v-for="item in adds" :key="item" @click="showDialog(item)">
+              <v-list-tile-title v-text="item"></v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
       </v-toolbar-items>
     </v-toolbar>
+    <v-dialog v-model="accountDialog" max-width="500px"><add-account :form="form.AddAccount" :mode="'add'" @close="closeDialog"></add-account></v-dialog>
+    <v-dialog v-model="addTagDialog" max-width="300px"><add-tag :form="form.AddTag" @close="closeDialog"></add-tag></v-dialog>
+    <v-dialog v-model="addSubtagDialog" max-width="300px"><add-subtag :form="form.AddSubtag" @close="closeDialog"></add-subtag></v-dialog>
     <main>
       <nuxt />
     </main>
@@ -55,10 +64,38 @@
 </template>
 
 <script>
+import AddAccount from '@/components/AddAccount'
+import AddTag from '@/components/AddTag'
+import AddSubtag from '@/components/AddSubtag'
 export default {
+  components: {
+    AddAccount, AddTag, AddSubtag
+  },
   data () {
     return {
       drawer: false,
+      accountDialog: false,
+      addTagDialog: false,
+      addSubtagDialog: false,
+      form: {
+        AddAccount: {
+          id: null,
+          date: null,
+          time: null,
+          role: null,
+          tag: {id: null},
+          subtag: null,
+          note: null,
+          cost: null
+        },
+        AddTag: {
+          name: null
+        },
+        AddSubtag: {
+          tag_id: null,
+          name: null
+        }
+      },
       title: {
         to: '/history'
       },
@@ -76,31 +113,21 @@ export default {
         {
           action: 'local_offer',
           title: '標籤',
-          items: [
-            { title: '正餐', to: '/tags/正餐' },
-            { title: '零食飲料', to: '/tags/零食飲料' },
-            { title: '車費', to: '/tags/車費' },
-            { title: '食材', to: '/tags/食材' },
-            { title: '儲值', to: '/tags/食材' },
-            { title: '日用品', to: '/tags/日用品' },
-            { title: '生活費', to: '/tags/生活費' },
-            { title: '娛樂', to: '/tags/娛樂' },
-            { title: '其他', to: '/tags/其他' }
-          ]
+          items: []
         },
         {
           action: 'settings',
           title: '設定',
           to: '/settings'
         }
-      ]
+      ],
+      adds: ['記帳', '標籤', '子標籤']
     }
   },
   async created () {
     let response = await this.$axios.get('tag/all')
     this.items.forEach(element => {
       if (element.title === '標籤') {
-        element.items = []
         let temp = {}
         response.data.forEach(tag => {
           temp = {
@@ -111,6 +138,28 @@ export default {
         })
       }
     })
+  },
+  methods: {
+    showDialog (item) {
+      switch (item) {
+        case '記帳':
+          this.accountDialog = true
+          break
+        case '標籤':
+          this.addTagDialog = true
+          break
+        case '子標籤':
+          this.addSubtagDialog = true
+          break
+        default:
+          break
+      }
+    },
+    closeDialog () {
+      this.accountDialog = false
+      this.addTagDialog = false
+      this.addSubtagDialog = false
+    }
   }
 }
 </script>
