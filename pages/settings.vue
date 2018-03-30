@@ -1,22 +1,31 @@
 <template>
-  <v-container>
+  <v-container class="mt-0">
     <v-card>
       <transition mode="out-in">
         <v-card-title v-if="showAction" key="noSelect">
           Nutrition
+          <v-spacer></v-spacer>
+          <v-text-field
+            append-icon="search"
+            label="Search"
+            single-line
+            hide-details
+            v-model="search"
+          ></v-text-field>
         </v-card-title>
         <v-card-title v-else="!showAction" key="select" class="accent">            
-            已選取 {{ selected.length }} 筆記錄
+            已選取 {{ selected.length }} 筆標籤
             <v-spacer></v-spacer>
-            <v-btn flat icon><v-icon>delete</v-icon></v-btn>
+            <v-btn flat icon @click="removeTag"><v-icon>delete</v-icon></v-btn>
         </v-card-title>
       </transition>
       <v-data-table
         :headers="headers"
         :items="items"
         :rows-per-page-items="rowsPerPageItems"
+        :search="search"
         v-model="selected"
-        item-key="name"
+        item-key="tag"
         select-all
         class="elevation-1"
       >
@@ -30,48 +39,25 @@
           </td>
           <td>
             <v-edit-dialog lazy>
-              {{ props.item.name }}
+              {{ props.item.tag }}
               <v-text-field
                 slot="input"
                 label="Edit"
-                v-model="props.item.name"
+                v-model="props.item.tag"
                 single-line
                 counter="25"
                 :rules="[max25chars]"
+                @click="saveValue(props.item.tag)"
+                @blur="updateTag(props.item)"
               ></v-text-field>
             </v-edit-dialog>
           </td>
           <td>
-            <v-edit-dialog lazy>
-              {{ props.item.calories }}
-              <v-text-field
-                slot="input"
-                label="Edit"
-                v-model="props.item.calories"
-                single-line
-                counter="25"
-                :rules="[max25chars]"
-              ></v-text-field>
-            </v-edit-dialog>
-          </td>
-          <td>
-            <v-select
-              chips
-              tags
-              append-icon=""
-              clearable
-              v-model="props.item.chips"
-            >
-              <template slot="selection" slot-scope="data">
-                <v-chip
-                  close
-                  @input="removeChip(props.item.chips, data.item)"
-                  :selected="data.selected"
-                >
-                  <strong>{{ data.item }}</strong>
-                </v-chip>
-              </template>
-            </v-select>
+            <v-chip close 
+                    v-for="chip in props.item.chips" 
+                    :key="chip.name"
+                    @input="removeChip(props.item.chips, props.item)"
+                    @click="">{{ chip.name }}</v-chip>
           </td>
         </template>
       </v-data-table>
@@ -80,117 +66,23 @@
 </template>
 
 <script>
-import AddAccount from '@/components/AddAccount'
 import FAB from '@/components/FloatActionButton'
 export default {
   components: {
-    AddAccount, FAB
+    FAB
   },
   data () {
     return {
-      formData: {
-        date: null,
-        time: null,
-        who: null,
-        mainTag: null,
-        subTag: null,
-        info: null,
-        cost: null
-      },
+      orginValue: null,
       rowsPerPageItems: [10, 15, 20, { text: 'All', value: -1 }],
       search: '',
       selected: [],
       max25chars: (v) => v.length <= 25 || 'Input too long!',
       headers: [
-        { text: '主標籤', value: 'name', align: 'left', sortable: false },
-        { text: '圖示', value: 'calories', align: 'left', sortable: false },
-        { text: '子標籤', value: 'fat', align: 'left', sortable: false }
+        { text: '主標籤', value: 'tag', align: 'left', sortable: false },
+        { text: '子標籤', value: 'subtag', align: 'left', sortable: false }
       ],
-      items: [
-        {
-          value: false,
-          name: 'Frozen Yogurt',
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          chips: []
-        },
-        {
-          value: false,
-          name: 'Ice cream sandwich',
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          chips: []
-        },
-        {
-          value: false,
-          name: 'Eclair',
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          chips: []
-        },
-        {
-          value: false,
-          name: 'Cupcake',
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3
-        },
-        {
-          value: false,
-          name: 'Gingerbread',
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9
-        },
-        {
-          value: false,
-          name: 'Jelly bean',
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0
-        },
-        {
-          value: false,
-          name: 'Lollipop',
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0
-        },
-        {
-          value: false,
-          name: 'Honeycomb',
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5
-        },
-        {
-          value: false,
-          name: 'Donut',
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9
-        },
-        {
-          value: false,
-          name: 'KitKat',
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7
-        }
-      ]
+      items: []
     }
   },
   computed: {
@@ -198,29 +90,67 @@ export default {
       return !this.selected.length > 0
     }
   },
+  async created () {
+    let response = await this.$axios.get('tag/all')
+    this.items = []
+    let temp = {}
+    response.data.forEach(tag => {
+      temp = {
+        value: false,
+        id: tag.id,
+        tag: tag.name,
+        chips: tag.subtag
+      }
+      this.items.push(temp)
+    })
+  },
   methods: {
-    showAccountDialog (item) {
-      // console.log(item)
-      this.formData.date = item.name
-      this.accountDialog = true
+    saveValue (tag) {
+      this.orginValue = tag
     },
-    closeDialog () {
-      this.accountDialog = false
+    async updateTag (item) {
+      if (item.tag !== this.orginValue) {
+        let form = {name: item.tag}
+        // TODO response
+        await this.$axios.put('tag/update/' + item.id, form)
+          .then(response => {
+            console.log(response)
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
     },
-    removeChip (chips, item) {
-      console.log(chips)
-      chips.splice(chips.indexOf(item), 1)
+    async removeChip (chips, item) {
+      let removeSubtag = chips.splice(chips.indexOf(item), 1)[0]
       chips = [...chips]
+      // TODO response
+      await this.$axios.delete('subtag/delete/' + removeSubtag.id)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async removeTag () {
+      let tagsID = []
+      this.selected.forEach(tag => {
+        tagsID.push(tag.id)
+      })
+      await this.$axios.delete('tag/delete', {params: {'id': tagsID}})
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
 }
 </script>
 
 <style scoped>
-.no-margin-top {
-  margin: 0;
-}
-
 .v-leave {
   opacity: 1;
 }
