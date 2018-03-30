@@ -39,18 +39,9 @@ export default {
   },
   methods: {
     sendForm () {
-      this.add()
-    },
-    async add () {
-      // TODO vuex response message 
-      await this.$axios.post('tag/add', this.form)
-        .then(response => {
-          this.close()
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      this.$store.dispatch('tag/addTag', this.form).then(() => {
+        this.close()
+      })
     },
     close () {
       this.$emit('close')

@@ -67,6 +67,7 @@
 import AddAccount from '@/components/AddAccount'
 import AddTag from '@/components/AddTag'
 import AddSubtag from '@/components/AddSubtag'
+// import { mapActions } from 'vuex'
 export default {
   components: {
     AddAccount, AddTag, AddSubtag
@@ -99,7 +100,7 @@ export default {
       title: {
         to: '/history'
       },
-      items: [
+      listItems: [
         {
           action: 'insert_chart',
           title: '圖表',
@@ -124,20 +125,19 @@ export default {
       adds: ['記帳', '標籤', '子標籤']
     }
   },
-  async created () {
-    let response = await this.$axios.get('tag/all')
-    this.items.forEach(element => {
-      if (element.title === '標籤') {
-        let temp = {}
-        response.data.forEach(tag => {
-          temp = {
-            title: tag.name,
-            to: '/tags/' + tag.name
-          }
-          element.items.push(temp)
-        })
-      }
-    })
+  computed: {
+    items () {
+      let tags = this.$store.getters['tag/default']
+      this.listItems.forEach(element => {
+        if (element.title === '標籤') {
+          element.items = tags
+        }
+      })
+      return this.listItems
+    }
+  },
+  created () {
+    this.$store.dispatch('tag/allTag')
   },
   methods: {
     showDialog (item) {

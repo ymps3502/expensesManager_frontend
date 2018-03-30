@@ -39,11 +39,10 @@
                         <v-card-actions>
                           <v-btn flat
                                 color="primary"
-                                @click.native="cancel()"
-                                取消</v-btn>
-                            <v-btn flat
-                                  color="primary"
-                                  @click.native="save()">選取</v-btn>
+                                @click.native="save()">選取</v-btn>
+                          <v-btn flat
+                                color="primary"
+                                @click.native="cancel()">取消</v-btn>
                         </v-card-actions>
                       </template>
                     </v-date-picker>
@@ -134,26 +133,15 @@ export default {
         date: false,
         time: false
       },
-      roles: ['自己', '女友', '其他'],
-      tags: []
+      roles: ['自己', '女友', '其他']
     }
   },
-  async created () {
-    let response = await this.$axios.get('tag/all')
-    this.tags = []
-    let temp = {}
-    response.data.forEach(tag => {
-      temp = {
-        id: tag.id,
-        name: tag.name,
-        subtags: tag.subtag
-      }
-      this.tags.push(temp)
-    })
-  },
   computed: {
+    tags () {
+      return this.$store.getters['tag/addAccount']
+    },
     subtags () {
-      let selectTag = this.tags.find(tag => tag.id === this.form.tag.id)
+      let selectTag = this.tags.find(tag => tag.id === this.form.tag)
       if (selectTag && selectTag.subtags) {
         return selectTag.subtags
       }

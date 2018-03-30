@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="headline">
-      新增子標籤
+      子標籤
       <v-spacer></v-spacer>
       <v-btn flat icon @click="close"><v-icon>close</v-icon></v-btn>
     </v-card-title>
@@ -30,7 +30,7 @@
       <v-btn color="primary"
             flat
             nuxt
-            @click="sendForm">新增</v-btn>
+            @click="sendForm">{{ modeBtn }}</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -40,40 +40,38 @@ export default {
   props: {
     form: {
       type: Object
+    },
+    mode: {
+      type: String,
+      default: 'add'
     }
   },
-  data () {
-    return {
-      tags: []
+  computed: {
+    tags () {
+      return this.$store.getters['tag/addSubtag']
+    },
+    modeBtn () {
+      return this.mode === 'add' ? '新增' : '儲存'
+    },
+    editMode () {
+      return this.mode === 'edit'
     }
-  },
-  async created () {
-    let response = await this.$axios.get('tag/all')
-    this.tags = []
-    let temp = {}
-    response.data.forEach(tag => {
-      temp = {
-        tag_id: tag.id,
-        name: tag.name
-      }
-      this.tags.push(temp)
-    })
   },
   methods: {
     sendForm () {
-      // console.log(this.form)
-      this.add()
+      if (this.mode === 'add') this.add()
+      else this.update()
     },
-    async add () {
-      // TODO vuex response message 
-      await this.$axios.post('subtag/add', this.form)
-        .then(response => {
-          this.close()
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error)
-        })
+    add () {
+      this.$store.dispatch('tag/addSubtag', this.form).then(() => {
+        this.close()
+      })
+    },
+    update () {
+      // TODO prevent sending data without changed
+      this.$store.dispatch('tag/updateSubtag', this.form).then(() => {
+        this.close()
+      })
     },
     close () {
       this.$emit('close')

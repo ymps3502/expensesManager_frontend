@@ -105,8 +105,9 @@ export default {
     }
   },
   async created () {
-    // TODO get tag id
-    let response = await this.$axios.get('bill/tag/1')
+    let tagName = this.$route.path.split('/').pop()
+    let tag = this.$store.getters['tag/getTagID'](tagName)
+    let response = await this.$axios.get('bill/tag/' + tag.id)
     let temp = {}
     response.data.forEach(bill => {
       // console.log(bill)

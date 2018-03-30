@@ -2,7 +2,7 @@
   <v-container class="mt-0">
     <v-card>
       <transition mode="out-in">
-        <v-card-title v-if="showAction" key="noSelect">
+        <v-card-title v-if="!showAction" key="noSelect">
           Nutrition
           <v-spacer></v-spacer>
           <v-text-field
@@ -13,7 +13,7 @@
             v-model="search"
           ></v-text-field>
         </v-card-title>
-        <v-card-title v-else="!showAction" key="select" class="accent">            
+        <v-card-title v-else="showAction" key="select" class="accent">            
             已選取 {{ selected.length }} 筆標籤
             <v-spacer></v-spacer>
             <v-btn flat icon @click="removeTag"><v-icon>delete</v-icon></v-btn>
@@ -56,20 +56,22 @@
             <v-chip close 
                     v-for="chip in props.item.chips" 
                     :key="chip.name"
-                    @input="removeChip(props.item.chips, props.item)"
-                    @click="">{{ chip.name }}</v-chip>
+                    @input="removeChip(chip.id)"
+                    @click="showDialog(chip)">{{ chip.name }}</v-chip>
           </td>
         </template>
       </v-data-table>
     </v-card>
+    <v-dialog v-model="addSubtagDialog" max-width="300px"><add-subtag :form="form.AddSubtag" :mode="'edit'" @close="closeDialog"></add-subtag></v-dialog>
   </v-container>
 </template>
 
 <script>
 import FAB from '@/components/FloatActionButton'
+import AddSubtag from '@/components/AddSubtag'
 export default {
   components: {
-    FAB
+    FAB, AddSubtag
   },
   data () {
     return {
@@ -82,69 +84,54 @@ export default {
         { text: '主標籤', value: 'tag', align: 'left', sortable: false },
         { text: '子標籤', value: 'subtag', align: 'left', sortable: false }
       ],
-      items: []
+      addSubtagDialog: false,
+      form: {
+        AddSubtag: {
+          tag_id: null,
+          name: null
+        }
+      }
     }
   },
   computed: {
     showAction () {
-      return !this.selected.length > 0
+      return this.selected.length !== 0
+    },
+    items () {
+      return this.$store.getters['tag/settings']
     }
-  },
-  async created () {
-    let response = await this.$axios.get('tag/all')
-    this.items = []
-    let temp = {}
-    response.data.forEach(tag => {
-      temp = {
-        value: false,
-        id: tag.id,
-        tag: tag.name,
-        chips: tag.subtag
-      }
-      this.items.push(temp)
-    })
   },
   methods: {
     saveValue (tag) {
       this.orginValue = tag
     },
-    async updateTag (item) {
+    updateTag (item) {
       if (item.tag !== this.orginValue) {
-        let form = {name: item.tag}
-        // TODO response
-        await this.$axios.put('tag/update/' + item.id, form)
-          .then(response => {
-            console.log(response)
-          })
-          .catch(error => {
-            console.log(error)
-          })
+        let form = {
+          id: item.id,
+          name: item.tag
+        }
+        this.$store.dispatch('tag/updateTag', form)
       }
     },
-    async removeChip (chips, item) {
-      let removeSubtag = chips.splice(chips.indexOf(item), 1)[0]
-      chips = [...chips]
-      // TODO response
-      await this.$axios.delete('subtag/delete/' + removeSubtag.id)
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error)
-        })
+    removeChip (chipID) {
+      this.$store.dispatch('tag/deleteSubtag', chipID)
     },
     async removeTag () {
       let tagsID = []
       this.selected.forEach(tag => {
         tagsID.push(tag.id)
       })
-      await this.$axios.delete('tag/delete', {params: {'id': tagsID}})
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      this.$store.dispatch('tag/deleteTag', tagsID).then(() => {
+        this.selected = []
+      })
+    },
+    showDialog (item) {
+      Object.assign(this.form.AddSubtag, item)
+      this.addSubtagDialog = true
+    },
+    closeDialog () {
+      this.addSubtagDialog = false
     }
   }
 }
