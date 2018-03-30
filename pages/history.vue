@@ -16,7 +16,7 @@
         <v-card-title v-else="!showAction" key="select" class="accent">            
             已選取 {{ selected.length }} 筆記錄
             <v-spacer></v-spacer>
-            <v-btn flat icon><v-icon>delete</v-icon></v-btn>
+            <v-btn flat icon @click="deleteItem()"><v-icon>delete</v-icon></v-btn>
         </v-card-title>
       </transition>
       <v-data-table
@@ -124,9 +124,17 @@ export default {
       this.formData.time = t[1]
       this.accountDialog = true
     },
-    async deleteItem (id) {
+    async deleteItem (id = 0) {
       // TODO vuex response message 
-      await this.$axios.delete('bill/delete/' + id)
+      let IDs = []
+      if (id !== 0) {
+        IDs.push(id)
+      } else {
+        this.selected.forEach(bill => {
+          IDs.push(bill.id)
+        })
+      }
+      await this.$axios.delete('bill/delete/', {params: {'id': IDs}})
         .then(response => {
           console.log(response)
         })
@@ -137,7 +145,6 @@ export default {
     closeDialog () {
       this.accountDialog = false
     }
-    // TODO create delete multiple method
   }
 }
 </script>
