@@ -10,7 +10,7 @@
           <v-container wrap>
             <v-layout>
               <v-flex class="cell">
-                <bar-chart :data="chart.bar" :options="chart.options.bar" v-if="chart.bar.isLoaded"></bar-chart>
+                <bar-chart :data="barData" :options="barOptions" v-if="isLoaded.bar"></bar-chart>
               </v-flex>
             </v-layout>
           </v-container>
@@ -26,7 +26,7 @@
               <v-container wrap>
                 <v-layout>
                   <v-flex class="cell">
-                    <pie-chart :data="chart.data1" :options="chart.options.pie" v-if="chart.data1.isLoaded"></pie-chart>
+                    <pie-chart :data="pieRoleData" :options="pieOptions" v-if="isLoaded.role"></pie-chart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -37,7 +37,7 @@
               <v-container>
                 <v-layout>
                   <v-flex class="cell">
-                    <pie-chart :data="chart.data2" :options="chart.options.pie" v-if="chart.data2.isLoaded"></pie-chart>
+                    <pie-chart :data="pieTagData" :options="pieOptions" v-if="isLoaded.tag"></pie-chart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -49,105 +49,41 @@
   </v-container>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import PieChart from '@/components/PieChart.js'
 import BarChart from '@/components/BarChart.js'
 export default {
   components: {
-    PieChart,
-    BarChart
+    PieChart, BarChart
   },
   data () {
     return {
-      chart: {
-        bar: {
-          isLoaded: false,
-          labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-          datasets: [
-            {
-              data: [],
-              backgroundColor: '#8FD8D8',
-              borderColor: '#75afaf',
-              borderWidth: 1.5
-            }
-          ]
-        },
-        data1: {
-          isLoaded: false,
-          labels: [],
-          datasets: [
-            {
-              label: 'Data One',
-              backgroundColor: ['#2780c4', '#fccd32', '#c6c6c6'],
-              data: []
-            }
-          ]
-        },
-        data2: {
-          isLoaded: false,
-          labels: [],
-          datasets: [
-            {
-              label: 'Data One',
-              backgroundColor: [
-                '#2780c4',
-                '#fccd32',
-                '#f78731',
-                '#e22d45',
-                '#ce2970',
-                '#954a97',
-                '#59bae0',
-                '#38a052',
-                '#c6c6c6'
-              ],
-              data: []
-            }
-          ]
-        },
-        options: {
-          pie: {
-            responsive: true,
-            maintainAspectRatio: false,
-            legend: {
-              position: 'right'
-            }
-          },
-          bar: {
-            responsive: true,
-            maintainAspectRatio: false,
-            legend: {
-              display: false
-            },
-            scales: {
-              xAxes: [{ barPercentage: 1 }],
-              yAxes: [{
-                gridLines: {display: true}
-              }]
-            }
-          }
-        }
+      isLoaded: {
+        bar: false,
+        role: false,
+        tag: false
       }
     }
   },
-  async mounted () {
-    let respBar = await this.$axios.get('bill/year')
-    respBar.data.forEach(data => {
-      this.chart.bar.datasets[0].data[data.month - 1] = data.sum
+  computed: {
+    ...mapGetters({
+      barData: 'chart/barChart',
+      barOptions: 'chart/barAndLineOptions',
+      pieRoleData: 'chart/pieChart_roles',
+      pieTagData: 'chart/pieChart_tags',
+      pieOptions: 'chart/pieOptions'
     })
-    this.chart.bar.isLoaded = true
-
-    let respRoleChart = await this.$axios.get('bill/year/role')
-    respRoleChart.data.forEach(data => {
-      this.chart.data1.labels.push(data.role)
-      this.chart.data1.datasets[0].data.push(data.sum)
+  },
+  mounted () {
+    this.$store.dispatch('chart/yearBar').then(() => {
+      this.isLoaded.bar = true
     })
-    this.chart.data1.isLoaded = true
-
-    let respTagChart = await this.$axios.get('bill/year/tag')
-    respTagChart.data.forEach(data => {
-      this.chart.data2.labels.push(data.tag.name)
-      this.chart.data2.datasets[0].data.push(data.sum)
+    this.$store.dispatch('chart/yearRole').then(() => {
+      this.isLoaded.role = true
     })
-    this.chart.data2.isLoaded = true
+    this.$store.dispatch('chart/yearTag').then(() => {
+      this.isLoaded.tag = true
+    })
   }
 }
 </script>

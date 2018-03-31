@@ -37,7 +37,7 @@
               <v-container wrap>
                 <v-layout>
                   <v-flex class="cell">
-                    <pie-chart :data="chart.data1" :options="chart.options" v-if="chart.data1.isLoaded"></pie-chart>
+                    <pie-chart :data="pieRoleData" :options="pieOptions" v-if="isLoaded.role"></pie-chart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -48,7 +48,7 @@
               <v-container>
                 <v-layout>
                   <v-flex class="cell">
-                    <pie-chart :data="chart.data2" :options="chart.options" v-if="chart.data2.isLoaded"></pie-chart>
+                    <pie-chart :data="pieTagData" :options="pieOptions" v-if="isLoaded.tag"></pie-chart>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -68,71 +68,29 @@ export default {
   },
   data () {
     return {
-      chart: {
-        data1: {
-          isLoaded: false,
-          labels: [],
-          datasets: [
-            {
-              label: 'Data One',
-              backgroundColor: ['#2780c4', '#fccd32', '#c6c6c6'],
-              data: []
-            }
-          ]
-        },
-        data2: {
-          isLoaded: false,
-          labels: [],
-          datasets: [
-            {
-              label: 'Data One',
-              backgroundColor: [
-                '#2780c4',
-                '#fccd32',
-                '#f78731',
-                '#e22d45',
-                '#ce2970',
-                '#954a97',
-                '#59bae0',
-                '#38a052',
-                '#c6c6c6'
-              ],
-              data: []
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          legend: {
-            position: 'right'
-          }
-        }
+      isLoaded: {
+        role: false,
+        tag: false
       }
     }
   },
   computed: {
     ...mapGetters({
       totolPrice: 'bill/todayTotal',
-      accounts: 'bill/today'
+      accounts: 'bill/today',
+      pieOptions: 'chart/pieOptions',
+      pieRoleData: 'chart/pieChart_roles',
+      pieTagData: 'chart/pieChart_tags'
     })
   },
-  async mounted () {
+  mounted () {
     this.$store.dispatch('bill/todayBill')
-
-    let respRoleChart = await this.$axios.get('bill/today/role')
-    respRoleChart.data.forEach(data => {
-      this.chart.data1.labels.push(data.role)
-      this.chart.data1.datasets[0].data.push(data.sum)
+    this.$store.dispatch('chart/todayRole').then(() => {
+      this.isLoaded.role = true
     })
-    this.chart.data1.isLoaded = true
-
-    let respTagChart = await this.$axios.get('bill/today/tag')
-    respTagChart.data.forEach(data => {
-      this.chart.data2.labels.push(data.tag.name)
-      this.chart.data2.datasets[0].data.push(data.sum)
+    this.$store.dispatch('chart/todayTag').then(() => {
+      this.isLoaded.tag = true
     })
-    this.chart.data2.isLoaded = true
   }
 }
 </script>
