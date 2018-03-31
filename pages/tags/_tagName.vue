@@ -16,7 +16,7 @@
         <v-card-title v-else="!showAction" key="select" class="accent">            
             已選取 {{ selected.length }} 筆記錄
             <v-spacer></v-spacer>
-            <v-btn flat icon><v-icon>delete</v-icon></v-btn>
+            <v-btn flat icon @click="deleteItem()"><v-icon>delete</v-icon></v-btn>
         </v-card-title>
       </transition>
       <v-data-table
@@ -27,7 +27,7 @@
         :pagination.sync="pagination"
         v-model="selected"
         must-sort
-        item-key="time"
+        item-key="id"
         select-all
         class="elevation-1"
       >
@@ -58,7 +58,6 @@
 </template>
 
 <script>
-import moment from 'moment'
 import AddAccount from '@/components/AddAccount'
 import FAB from '@/components/FloatActionButton'
 export default {
@@ -90,13 +89,15 @@ export default {
         { text: '花費', value: 'cost', align: 'left' },
         { text: '備註', value: 'note', align: 'left', sortable: false },
         { text: '動作', value: 'icon', align: 'center', sortable: false }
-      ],
-      items: []
+      ]
     }
   },
   computed: {
     showAction () {
       return !this.selected.length > 0
+    },
+    items () {
+      return this.$store.getters['bill/tag']
     }
   },
   filters: {
@@ -104,25 +105,10 @@ export default {
       return subtag ? subtag.name : '無'
     }
   },
-  async created () {
+  created () {
     let tagName = this.$route.path.split('/').pop()
     let tag = this.$store.getters['tag/getTagID'](tagName)
-    let response = await this.$axios.get('bill/tag/' + tag.id)
-    let temp = {}
-    response.data.forEach(bill => {
-      // console.log(bill)
-      temp = {
-        value: false,
-        time: moment(bill.time).format('YYYY-MM-DD hh:mma'),
-        role: bill.role,
-        tag: bill.tag,
-        subtag: bill.subtag,
-        cost: bill.cost,
-        note: bill.note,
-        id: bill.id
-      }
-      this.items.push(temp)
-    })
+    this.$store.dispatch('bill/tagBill', tag.id)
   },
   methods: {
     showAccountDialog (item) {
@@ -133,15 +119,19 @@ export default {
       this.formData.time = t[1]
       this.accountDialog = true
     },
-    async deleteItem (id) {
-      // TODO vuex response message 
-      await this.$axios.delete('bill/delete/' + id)
-        .then(response => {
-          console.log(response)
+    deleteItem (id = 0) {
+      let billsID = []
+      if (id !== 0) {
+        billsID.push(id)
+      } else {
+        this.selected.forEach(bill => {
+          billsID.push(bill.id)
         })
-        .catch(error => {
-          console.log(error)
-        })
+      }
+      this.$store.dispatch('bill/deleteBill', billsID).then(() => {
+        this.selected = []
+        this.$store.dispatch('bill/tagBill', this.items[0].tag.id)
+      })
     },
     closeDialog () {
       this.accountDialog = false

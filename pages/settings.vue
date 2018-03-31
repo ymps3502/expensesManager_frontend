@@ -25,7 +25,7 @@
         :rows-per-page-items="rowsPerPageItems"
         :search="search"
         v-model="selected"
-        item-key="tag"
+        item-key="id"
         select-all
         class="elevation-1"
       >

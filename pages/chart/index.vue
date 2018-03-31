@@ -60,6 +60,7 @@
   </v-container>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import PieChart from '@/components/PieChart.js'
 export default {
   components: {
@@ -67,7 +68,6 @@ export default {
   },
   data () {
     return {
-      accounts: [],
       chart: {
         data1: {
           isLoaded: false,
@@ -112,23 +112,13 @@ export default {
     }
   },
   computed: {
-    totolPrice () {
-      return this.accounts.reduce((previousValue, key) => {
-        return previousValue + key.cost
-      }, 0)
-    }
+    ...mapGetters({
+      totolPrice: 'bill/todayTotal',
+      accounts: 'bill/today'
+    })
   },
   async mounted () {
-    let respList = await this.$axios.get('bill/today')
-    let item = {}
-    respList.data.forEach(data => {
-      item = {
-        tag: data.tag.name,
-        role: data.role,
-        cost: data.cost
-      }
-      this.accounts.push(item)
-    })
+    this.$store.dispatch('bill/todayBill')
 
     let respRoleChart = await this.$axios.get('bill/today/role')
     respRoleChart.data.forEach(data => {
