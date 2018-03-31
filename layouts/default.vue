@@ -7,8 +7,7 @@
                          absolute>
       <v-list class="pt-2">
         <v-list-group v-for="item in items"
-                      :value="item.active"
-                      v-bind:key="item.title">
+                      :key="item.title">
           <v-list-tile slot="item"
                        :to="item.to">
             <v-list-tile-action>
@@ -23,8 +22,7 @@
           </v-list-tile>
           <v-list-tile v-for="subItem in item.items"
                        :key="subItem.title"
-                       :to="subItem.to"
-                       @click="">
+                       :to="subItem.to">
             <v-list-tile-content>
               <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
             </v-list-tile-content>
