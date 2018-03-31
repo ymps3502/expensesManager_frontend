@@ -156,37 +156,61 @@ export default {
   },
   methods: {
     sendForm () {
-      // console.log(this.form)
-      if (this.mode === 'add') this.add()
-      else this.update()
+      // console.log(this.mode)
+      this.mode === 'add' ? this.add() : this.update()
     },
-    async add () {
+    add () {
       let time = this.form.date + ' ' + this.form.time
-      this.form.time = moment(time, 'YYYY-MM-DD hh:mma').format('YYYY-MM-DD hh:mm')
-      // TODO vuex response message 
-      await this.$axios.post('bill/add', this.form)
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      let form = {
+        time: moment(time, 'YYYY-MM-DD hh:mma').format('YYYY-MM-DD hh:mm'),
+        role: this.form.role,
+        tag_id: this.form.tag,
+        subtag_id: this.form.subtag,
+        note: this.form.note,
+        cost: this.form.cost
+      }
+      this.$store.dispatch('bill/addBill', form).then(() => {
+        this.close()
+        this.updatePage()
+      })
     },
-    async update () {
+    update () {
       let time = this.form.date + ' ' + this.form.time
-      this.form.time = moment(time, 'YYYY-MM-DD hh:mma').format('YYYY-MM-DD hh:mm')
-      // TODO vuex response message 
-      await this.$axios.put('bill/update/' + this.form.id, this.form)
-        .then(response => {
-          this.close()
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      let form = {
+        id: this.form.id,
+        time: moment(time, 'YYYY-MM-DD hh:mma').format('YYYY-MM-DD hh:mm'),
+        role: this.form.role,
+        tag_id: this.form.tag,
+        subtag_id: this.form.subtag.id,
+        note: this.form.note,
+        cost: this.form.cost
+      }
+      this.$store.dispatch('bill/updateBill', form).then(() => {
+        this.close()
+        this.updatePage()
+      })
     },
     close () {
       this.$emit('close')
+    },
+    updatePage () {
+      let pathName = this.$route.path.split('/').pop()
+      let pathLists = {
+        chart: ['bill/todayBill'],
+        thisWeek: ['bill/weekBill'],
+        thisMonth: ['bill/monthBill'],
+        thisYear: ['bill/yearBill'],
+        history: ['bill/allBill']
+      }
+      if (pathName in pathLists) {
+        pathLists[pathName].forEach(path => {
+          this.$store.dispatch(path)
+        })
+      } else {
+        // tag page
+        let tag = this.$store.getters['tag/getTagID'](pathName)
+        this.$store.dispatch('bill/tagBill', tag.id)
+      }
     }
   }
 }
