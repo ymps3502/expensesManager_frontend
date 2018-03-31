@@ -137,7 +137,7 @@ export const mutations = {
   setYearBar (state, data) {
     let sumData = []
     data.forEach(day => {
-      sumData[data.month - 1] = data.sum
+      sumData[day.month - 1] = day.sum
     })
     state.data.bar.labels = [...Array(12).keys()].map(v => 1 + v)
     state.data.bar.data = sumData
