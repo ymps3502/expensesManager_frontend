@@ -59,10 +59,8 @@ export const mutations = {
 
 export const actions = {
   async allTag ({ state, commit }) {
-    if (!state.loading) {
-      let response = await this.$axios.get('tag/all')
-      commit('setTag', response.data)
-    }
+    let response = await this.$axios.get('tag/all')
+    commit('setTag', response.data)
   },
   async addTag ({dispatch}, form) {
     await this.$axios.post('tag/add', form)
