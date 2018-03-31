@@ -11,12 +11,13 @@
         <v-icon>arrow_drop_down</v-icon>
       </v-toolbar-title>
       <v-list>
-        <v-list-tile v-for="item in time"
-                      :key="item.title"
-                      :to="item.to"
-                      @click="updataTimeText(item.title)">
-          <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-        </v-list-tile>
+        <v-list-group v-for="item in time"
+                      :key="item.title">
+          <v-list-tile slot="item"
+                        :to="item.to">
+            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+          </v-list-tile>
+        </v-list-group>
       </v-list>
     </v-menu>
   </v-toolbar>
@@ -26,7 +27,6 @@
 export default {
   data () {
     return {
-      timeText: '今天',
       time: [
         {
           title: '今天',
@@ -47,26 +47,19 @@ export default {
       ]
     }
   },
-  mounted () {
-    let path = window.location.pathname.split(/\//)[2]
-    switch (path) {
-      case 'thisWeek':
-        this.updataTimeText('本週')
-        break
-      case 'thisMonth':
-        this.updataTimeText('本月')
-        break
-      case 'thisYear':
-        this.updataTimeText('今年')
-        break
-      case undefined:
-        this.updataTimeText('今天')
-        break
-    }
-  },
-  methods: {
-    updataTimeText (newText) {
-      this.timeText = newText
+  computed: {
+    timeText () {
+      let path = this.$route.path.split('/').pop()
+      switch (path) {
+        case 'thisWeek':
+          return '本週'
+        case 'thisMonth':
+          return '本月'
+        case 'thisYear':
+          return '今年'
+        default:
+          return '今天'
+      }
     }
   }
 }
