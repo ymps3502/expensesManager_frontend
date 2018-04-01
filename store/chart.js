@@ -40,7 +40,7 @@ export const state = () => ({
       legend: { display: false },
       scales: {
         xAxes: [{ barPercentage: 1 }],
-        yAxes: [{ gridLines: { display: true } }]
+        yAxes: [{ gridLines: { display: true }, ticks: { min: 0 } }]
       }
     }
   }
