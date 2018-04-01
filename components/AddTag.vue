@@ -39,9 +39,8 @@ export default {
   },
   methods: {
     sendForm () {
-      this.$store.dispatch('tag/addTag', this.form).then(() => {
-        this.close()
-      })
+      this.close()
+      this.$store.dispatch('tag/addTag', this.form)
     },
     close () {
       this.$emit('close')

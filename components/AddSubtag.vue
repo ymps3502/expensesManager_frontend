@@ -63,15 +63,13 @@ export default {
       else this.update()
     },
     add () {
-      this.$store.dispatch('tag/addSubtag', this.form).then(() => {
-        this.close()
-      })
+      this.close()
+      this.$store.dispatch('tag/addSubtag', this.form)
     },
     update () {
       // TODO prevent sending data without changed
-      this.$store.dispatch('tag/updateSubtag', this.form).then(() => {
-        this.close()
-      })
+      this.close()
+      this.$store.dispatch('tag/updateSubtag', this.form)
     },
     close () {
       this.$emit('close')

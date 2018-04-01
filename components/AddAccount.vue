@@ -169,8 +169,8 @@ export default {
         note: this.form.note,
         cost: this.form.cost
       }
+      this.close()
       this.$store.dispatch('bill/addBill', form).then(() => {
-        this.close()
         this.updatePage()
       })
     },
@@ -185,8 +185,8 @@ export default {
         note: this.form.note,
         cost: this.form.cost
       }
+      this.close()
       this.$store.dispatch('bill/updateBill', form).then(() => {
-        this.close()
         this.updatePage()
       })
     },
