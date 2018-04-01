@@ -19,7 +19,6 @@ export default {
           ctx.font = '18px Noto Sans TC'
           ctx.fillText('無資料', width / 2, height / 2)
           ctx.restore()
-          console.log(ctx)
         }
       }
     })
