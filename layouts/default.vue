@@ -57,6 +57,14 @@
     <main>
       <nuxt />
     </main>
+    <v-snackbar
+      :timeout=3000
+      :color="snackbarColor"
+      v-model="showSnackbar"
+    >
+      {{ snackbarMsg }}
+      <v-btn dark flat @click.native="showSnackbar = false">關閉</v-btn>
+    </v-snackbar>
     <v-footer></v-footer>
   </v-app>
 </template>
@@ -71,6 +79,7 @@ export default {
   },
   data () {
     return {
+      snackbar: false,
       drawer: false,
       accountDialog: false,
       addTagDialog: false,
@@ -131,6 +140,20 @@ export default {
         }
       })
       return this.listItems
+    },
+    snackbarColor () {
+      return this.$store.getters['response/status']
+    },
+    snackbarMsg () {
+      return this.$store.getters['response/msg']
+    },
+    showSnackbar: {
+      get () {
+        return this.$store.getters['response/show']
+      },
+      set (value) {
+        this.$store.commit('response/setShow', value)
+      }
     }
   },
   created () {

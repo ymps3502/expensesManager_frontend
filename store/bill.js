@@ -106,31 +106,37 @@ export const actions = {
     let response = await this.$axios.get('bill/tag/' + id)
     commit('setTagBill', response.data)
   },
-  async addBill (context, form) {
+  async addBill ({commit}, form) {
     await this.$axios.post('bill/add', form)
       .then(response => {
-        console.log(response)
+        setResponse(commit, response)
       })
       .catch(error => {
         console.log(error)
       })
   },
-  async updateBill (context, form) {
+  async updateBill ({commit}, form) {
     await this.$axios.put('bill/update/' + form.id, form)
       .then(response => {
-        console.log(response)
+        setResponse(commit, response)
       })
       .catch(error => {
         console.log(error)
       })
   },
-  async deleteBill (context, billsID) {
+  async deleteBill ({commit}, billsID) {
     await this.$axios.delete('bill/delete', {params: {'id': billsID}})
       .then(response => {
-        console.log(response)
+        setResponse(commit, response)
       })
       .catch(error => {
         console.log(error)
       })
   }
+}
+
+function setResponse (commit, resp) {
+  commit('response/setMsg', resp.data.msg, {root: true})
+  commit('response/setStatus', 'success', {root: true})
+  commit('response/setShow', true, {root: true})
 }
