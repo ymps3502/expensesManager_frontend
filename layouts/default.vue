@@ -65,7 +65,6 @@
 import AddAccount from '@/components/AddAccount'
 import AddTag from '@/components/AddTag'
 import AddSubtag from '@/components/AddSubtag'
-// import { mapActions } from 'vuex'
 export default {
   components: {
     AddAccount, AddTag, AddSubtag
