@@ -3,7 +3,7 @@
     <v-card>
       <transition mode="out-in">
         <v-card-title v-if="!showAction" key="noSelect">
-          Nutrition
+          設定標籤
           <v-spacer></v-spacer>
           <v-text-field
             append-icon="search"
