@@ -62,70 +62,65 @@ export const actions = {
     let response = await this.$axios.get('tag/all')
     commit('setTag', response.data)
   },
-  async addTag ({dispatch, commit}, form) {
+  async addTag ({dispatch}, form) {
     await this.$axios.post('tag/add', form)
       .then(response => {
         dispatch('allTag')
-        setResponse(commit, response)
+        dispatch('response/setResponse', response, {root: true})
       })
       .catch(error => {
-        console.log(error)
+        dispatch('response/setResponse', error.response, {root: true})
+        console.log(error.response)
       })
   },
-  async updateTag ({dispatch, commit}, form) {
+  async updateTag ({dispatch}, form) {
     await this.$axios.put('tag/update/' + form.id, form)
       .then(response => {
         dispatch('allTag')
-        setResponse(commit, response)
+        dispatch('response/setResponse', response, {root: true})
       })
       .catch(error => {
         console.log(error)
       })
   },
-  async deleteTag ({dispatch, commit}, tagsID) {
+  async deleteTag ({dispatch}, tagsID) {
     await this.$axios.delete('tag/delete', {params: {'id': tagsID}})
       .then(response => {
         dispatch('allTag')
-        setResponse(commit, response)
+        dispatch('response/setResponse', response, {root: true})
       })
       .catch(error => {
         console.log(error)
       })
   },
-  async addSubtag ({dispatch, commit}, form) {
+  async addSubtag ({dispatch}, form) {
     await this.$axios.post('subtag/add', form)
       .then(response => {
         dispatch('allTag')
-        setResponse(commit, response)
+        dispatch('response/setResponse', response, {root: true})
       })
       .catch(error => {
         console.log(error)
       })
   },
-  async updateSubtag ({dispatch, commit}, form) {
+  async updateSubtag ({dispatch}, form) {
     await this.$axios.put('subtag/update/' + form.id, form)
       .then(response => {
         dispatch('allTag')
-        setResponse(commit, response)
+        dispatch('response/setResponse', response, {root: true})
       })
       .catch(error => {
         console.log(error)
       })
   },
-  async deleteSubtag ({dispatch, commit}, id) {
+  async deleteSubtag ({dispatch}, id) {
     await this.$axios.delete('subtag/delete/' + id)
       .then(response => {
         dispatch('allTag')
-        setResponse(commit, response)
+        dispatch('response/setResponse', response, {root: true})
       })
       .catch(error => {
         console.log(error)
       })
   }
-}
-
-function setResponse (commit, resp) {
-  commit('response/setMsg', resp.data.msg, {root: true})
-  commit('response/setStatus', 'success', {root: true})
-  commit('response/setShow', true, {root: true})
 }

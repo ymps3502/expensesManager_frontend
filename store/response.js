@@ -35,6 +35,15 @@ export const mutations = {
   }
 }
 
-// export const actions = {
-
-// }
+export const actions = {
+  setResponse ({commit}, resp) {
+    commit('setMsg', resp.data.message)
+    // TODO check status code
+    if (resp.status === 500) {
+      commit('setStatus', 'error')
+    } else {
+      commit('setStatus', 'success')
+    }
+    commit('setShow', true)
+  }
+}
