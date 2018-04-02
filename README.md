@@ -20,3 +20,15 @@ $ npm run generate
 ```
 
 For detailed explanation on how things work, check out the [Nuxt.js](https://github.com/nuxt/nuxt.js) and [Vuetify.js](https://vuetifyjs.com/) documentation.
+
+## TODO List
+### Fronend
+- [ ] bill's form validation
+- [ ] tag's form validation
+- [ ] subtag's form validation
+- [ ] some vuex state
+- [ ] dataRangeToolBar bug
+### Backend
+- [ ] bill's form validation
+- [ ] tag's form validation
+- [ ] subtag's form validation
