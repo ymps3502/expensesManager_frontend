@@ -52,17 +52,15 @@
       </v-data-table>
     </v-card>
     <v-spacer></v-spacer>
-    <FAB></FAB>
     <v-dialog v-model="accountDialog" max-width="500px"><add-account :form="formData" :mode="'edit'" @close="closeDialog"></add-account></v-dialog>
   </v-container>
 </template>
 
 <script>
 import AddAccount from '@/components/AddAccount'
-import FAB from '@/components/FloatActionButton'
 export default {
   components: {
-    AddAccount, FAB
+    AddAccount
   },
   data () {
     return {

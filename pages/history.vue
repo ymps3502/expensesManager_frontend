@@ -51,18 +51,15 @@
         </template>
       </v-data-table>
     </v-card>
-    <v-spacer></v-spacer>
-    <FAB></FAB>
     <v-dialog v-model="accountDialog" max-width="500px"><add-account :form="formData" :mode="'edit'" @close="closeDialog"></add-account></v-dialog>
   </v-container>
 </template>
 
 <script>
 import AddAccount from '@/components/AddAccount'
-import FAB from '@/components/FloatActionButton'
 export default {
   components: {
-    AddAccount, FAB
+    AddAccount
   },
   data () {
     return {
@@ -104,7 +101,6 @@ export default {
   },
   methods: {
     showAccountDialog (item) {
-      // console.log(item)
       this.formData = Object.assign(this.formData, item)
       let t = item.time.split(' ')
       this.formData.date = t[0]
@@ -112,7 +108,6 @@ export default {
       this.accountDialog = true
     },
     deleteItem (id = 0) {
-      // TODO vuex response message 
       let billsID = []
       if (id !== 0) {
         billsID.push(id)

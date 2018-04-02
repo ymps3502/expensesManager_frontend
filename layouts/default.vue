@@ -57,6 +57,7 @@
     <main>
       <nuxt />
     </main>
+    <FAB></FAB>
     <v-snackbar
       :timeout=3000
       :color="snackbarColor"
@@ -73,9 +74,10 @@
 import AddAccount from '@/components/AddAccount'
 import AddTag from '@/components/AddTag'
 import AddSubtag from '@/components/AddSubtag'
+import FAB from '@/components/FloatActionButton'
 export default {
   components: {
-    AddAccount, AddTag, AddSubtag
+    AddAccount, AddTag, AddSubtag, FAB
   },
   data () {
     return {
@@ -142,7 +144,7 @@ export default {
       return this.listItems
     },
     snackbarColor () {
-      return this.$store.getters['response/status']
+      return this.$store.getters['response/color']
     },
     snackbarMsg () {
       return this.$store.getters['response/msg']

@@ -67,11 +67,10 @@
 </template>
 
 <script>
-import FAB from '@/components/FloatActionButton'
 import AddSubtag from '@/components/AddSubtag'
 export default {
   components: {
-    FAB, AddSubtag
+    AddSubtag
   },
   data () {
     return {
