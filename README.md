@@ -22,12 +22,14 @@ $ npm run generate
 For detailed explanation on how things work, check out the [Nuxt.js](https://github.com/nuxt/nuxt.js) and [Vuetify.js](https://vuetifyjs.com/) documentation.
 
 ## TODO List
-### Fronend
+### Frontend
 - [ ] bill's form validation
 - [ ] tag's form validation
 - [ ] subtag's form validation
+- [ ] PWA
 - [ ] some vuex state
 - [ ] dataRangeToolBar bug
+- [ ] color design
 ### Backend
 - [ ] bill's form validation
 - [ ] tag's form validation
